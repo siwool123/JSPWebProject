@@ -133,7 +133,7 @@ function deletePost() {
 		</td>
 		<td width="33%" align="right">
 		<% if(idx>1){ %>
-		<a href="sub01_view.jsp?idx=<%= nextIdx %>">다음글 보기 &gt;</a>
+		<a href="sub01_view.jsp?idx=<%= nextIdx %>">다음글 보기 &gt;</a> 
 		<% } %>
 		</td>
 	</tr>
