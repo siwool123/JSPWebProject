@@ -23,7 +23,8 @@ if(dto.getId() != null){
 	session.setAttribute("UserName", dto.getName());
 	JSFunction.alertLocation(dto.getName()+" 님, 로그인에 성공했습니다.", "/JSPWebProject/main/main.jsp", out);
 }else{
-	request.setAttribute("LoginErrMsg", "아이디와 비밀번호를 다시 입력해주세요.");
-	request.getRequestDispatcher("/member/login.jsp").forward(request, response);
+	JSFunction.alertBack("아이디와 비밀번호가 일치하지 않습니다. 다시 입력해주세요.", out);
+	//request.setAttribute("LoginErrMsg", "아이디와 비밀번호를 다시 입력해주세요.");
+	//request.getRequestDispatcher("/member/login.jsp").forward(request, response);
 }
 %>

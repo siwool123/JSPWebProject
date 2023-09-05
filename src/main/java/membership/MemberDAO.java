@@ -52,6 +52,7 @@ public class MemberDAO extends JDBConnect {
 			rs = psmt.executeQuery();
 			if (rs.next()) { // 반환된 rs객체에 정보가있는지 확인
 				dto.setId(rs.getString(1));
+				dto.setName(rs.getString(3));
 			}else System.out.println("rs 에 정보가없습니다");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,10 +113,33 @@ public class MemberDAO extends JDBConnect {
 				dto.setAdd1(rs.getString(7));
 				dto.setAdd2(rs.getString(8));
 				dto.setAdd3(rs.getString(9));
+				dto.setAdmin(rs.getInt(11));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return dto;
+	}
+	
+	public int updateMember(MemberDTO dto) {
+		int result = 0;
+		String sql = "UPDATE member SET pw=?, name=?, email=?, emailok=?, phone=?, add1=?, add2=?, add3=? WHERE id=?";
+		try {
+			psmt = con.prepareStatement(sql);
+			psmt.setString(1, dto.getPw());
+			psmt.setString(2, dto.getName());
+			psmt.setString(3, dto.getEmail());
+			psmt.setString(4, dto.getEmailok());
+			psmt.setString(5, dto.getPhone());
+			psmt.setString(6, dto.getAdd1());
+			psmt.setString(7, dto.getAdd2());
+			psmt.setString(8, dto.getAdd3());
+			psmt.setString(9, dto.getId());
+			result = psmt.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("회원정보 변경 중 예외발생");
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

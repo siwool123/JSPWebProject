@@ -1,8 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/global_head.jsp" %>
-
-
+<%@ include file="../include/IsLoggedIn.jsp" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>공지사항_작성하기</title>
+</head>
  <body>
 	<center>
 	<div id="wrap">
@@ -67,10 +72,8 @@
 		</td>
 	</tr>
 	<tr>
-		<th class="text-center" 
-			style="vertical-align:middle;">첨부파일</th>
-		<td>
-			<input type="file" class="form-control" />
+		<th class="text-center" style="vertical-align:middle;">첨부파일</th>
+		<td><input type="file" class="form-control form-control-sm" />
 		</td>
 	</tr>
 </tbody>

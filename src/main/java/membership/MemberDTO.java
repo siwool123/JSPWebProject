@@ -11,6 +11,7 @@ public class MemberDTO {
 	private String add2;
 	private String add3;
 	private String regidate;
+	private int admin;
 	
 	public String getId() {
 		return id;
@@ -71,6 +72,12 @@ public class MemberDTO {
 	}
 	public void setRegidate(String regidate) {
 		this.regidate = regidate;
+	}
+	public int getAdmin() {
+		return admin;
+	}
+	public void setAdmin(int admin) {
+		this.admin = admin;
 	}
 	
 }

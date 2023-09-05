@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/global_head.jsp" %>
-
+<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6o4dibjn3k"></script>
 
  <body>
 	<center>
@@ -22,8 +22,22 @@
 				</div>
 				<div class="con_box">
 					<p class="con_tit"><img src="../images/center/sub07_tit01.gif" alt="오시는길" /></p>
-					<img src="../images/center/sub07_img01.gif" class="con_img"/>
-					<p class="con_tit"><img src="../images/center/sub07_tit02.gif" alt="자가용 오시는길" /></p>
+					<div id="map" style="width:100%;height:400px;"></div>
+					<script>
+					var map = new naver.maps.Map('map', {
+			            center: new naver.maps.LatLng(37.57424184251333, 126.88995655259231), //지도의 초기 중심 좌표
+			            zoom: 16, //지도의 초기 줌 레벨
+			            minZoom: 8, //지도의 최소 줌 레벨
+			            zoomControl: true, //줌 컨트롤의 표시 여부
+			            zoomControlOptions: { //줌 컨트롤의 옵션
+			                position: naver.maps.Position.TOP_RIGHT
+			        }});
+			        var marker = new naver.maps.Marker({
+			            position: new naver.maps.LatLng(37.57424184251333, 126.88995655259231),
+			            map: map
+			        });
+				   </script>
+					<p class="con_tit" style="margin-top:40px;"><img src="../images/center/sub07_tit02.gif" alt="자가용 오시는길" /></p>
 					<div class="in_box">
 						<p class="dot_tit">강북 방향</p>
 						<p style="margin-bottom:15px;">강변북로 진입 후 월드컵 경기장 방면으로 우측방향 → 난지도길 가양대교 방향으로 좌회전 → 상암동길 상암초교 방면으로 우회전 </p>
