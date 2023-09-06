@@ -15,6 +15,7 @@ public class NoticeDTO {
 	private String sfile;
 	private int downcnt;
 	private String name;
+	private int likecnt;
 	
 	public int getIdx() {
 		return idx;
@@ -75,6 +76,12 @@ public class NoticeDTO {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getLikecnt() {
+		return likecnt;
+	}
+	public void setLikecnt(int likecnt) {
+		this.likecnt = likecnt;
 	}
 	
 }

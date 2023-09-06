@@ -59,12 +59,12 @@ if (session.getAttribute("UserId") == null) {
 						</colgroup>
 						<tr>
 							<th><img src="../images/login_tit01.gif" alt="아이디" /></th>
-							<td><input type="text" name="user_id" value="<%= sua_loginId %>" class="login_input" /></td>
-							<td rowspan="2"><input type="image" src="../images/login_btn01.gif" alt="로그인" /></td>
+							<td><input type="text" name="user_id" value="<%= sua_loginId %>" class="login_input" tabindex="1" /></td>
+							<td rowspan="2"><input type="image" src="../images/login_btn01.gif" alt="로그인" tabindex="3" /></td>
 						</tr>
 						<tr>
 							<th><img src="../images/login_tit02.gif" alt="패스워드" /></th>
-							<td><input type="password" name="user_pw" value="" class="login_input" /></td>
+							<td><input type="password" name="user_pw" value="" class="login_input" tabindex="2" /></td>
 						</tr>
 					</table>
 					<p>

@@ -46,27 +46,28 @@ public class BoardPage {
 
 	/* List.jsp에서 전달해준 인수를 아래 매개변수를 통해 받는다. */ 
 	public static String pagingImg (int totalcnt, int pageSize, int blockPage, int pageNum, String reqUrl) {
-		String pagingStr = ""; 
+		String pagingStr = "<ul class='pagination pagination-sm justify-content-center'>"; 
 		
 		int totalPages = (int) Math.ceil(totalcnt / pageSize);
 		int pageTemp = ((pageNum-1)/blockPage)*blockPage+1;
 
 		if(pageTemp!=1) {
-			pagingStr += "<a href='"+reqUrl+"?pageNum=1'><i class=\"fa-solid fa-angles-left\"></i></a>&nbsp;";
-			pagingStr += "<a href='"+reqUrl+"?pageNum="+(pageTemp-1)+"'><i class=\"fa-solid fa-angle-left\"></i></a>";
+			pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"?pageNum=1'><i class='fa-solid fa-angles-left'></i></a></li>";
+			pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"?pageNum="+(pageTemp-1)+"'><i class='fa-solid fa-angle-left'></i></a></li>";
 		}
 		
 		int blockcnt = 1;
 		while(blockcnt <= blockPage && pageTemp <= totalPages) {
-			if(pageTemp==pageNum) pagingStr += "&nbsp;"+pageTemp+"&nbsp;";
-			else pagingStr += "&nbsp;<a href='"+reqUrl+"?pageNum="+pageTemp+"'>"+pageTemp+"</a>&nbsp;";
+			if(pageTemp==pageNum) pagingStr += "<li class='page-item'><a class='page-link active'>"+pageTemp+"</a></li>";
+			else pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"?pageNum="+pageTemp+"'>"+pageTemp+"</a></li>";
 			pageTemp++;
 			blockcnt++;
 		}
 		 if (pageTemp <= totalPages) {
-	        pagingStr += "<a href='" + reqUrl + "?pageNum="+pageTemp+"'><i class=\"fa-solid fa-angle-right\"></i></a>&nbsp;";
-	        pagingStr += "<a href='" + reqUrl + "?pageNum="+totalPages+"'><i class=\"fa-solid fa-angles-right\"></i></a>";
+	        pagingStr += "<li class='page-item'><a class='page-link' href='" + reqUrl + "?pageNum="+pageTemp+"'><i class='fa-solid fa-angle-right'></i></a></li>";
+	        pagingStr += "<li class='page-item'><a class='page-link' href='" + reqUrl + "?pageNum="+totalPages+"'><i class='fa-solid fa-angles-right'></i></a></li>";
 	     }
+		 pagingStr += "</ul>";
 	     return pagingStr;
 	}
 }

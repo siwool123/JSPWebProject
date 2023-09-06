@@ -1,3 +1,5 @@
+<%@page import="m1notice.CommentDTO"%>
+<%@page import="m1notice.CommentDAO"%>
 <%@page import="fileupload.FileUtil"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.List"%>
@@ -14,13 +16,13 @@
 String UserId = session.getAttribute("UserId").toString();
 MemberDAO mdao = new MemberDAO(application);
 MemberDTO mdto = mdao.viewMember(UserId);
+mdao.close();
 /*게시물 인출위해 파라미터를 받아온다. > dao객체생성하여 오라클연결
 > 게시물 조회수 증가 > 게시물 내용 추출하여 dto에 저장 */
 
 int idx = Integer.parseInt(request.getParameter("idx"));
 String ofile = request.getParameter("ofile"); 
 String sfile = request.getParameter("sfile");
-FileUtil.download(request, response, "/Uploads", sfile, ofile);
 
 NoticeDAO dao = new NoticeDAO(application);
 dao.updateVisitcnt(idx);
@@ -28,15 +30,18 @@ int maxIdx = dao.maxIdx();
 int prevIdx = dao.previousIdx(idx);
 int nextIdx = dao.nextIdx(idx);
 NoticeDTO dto = dao.selectView(idx);
-dao.downcntPlus(idx);
 dao.close();
 dto.setContent(dto.getContent().replaceAll("\r\n", "<br/>"));
 
+CommentDAO cdao = new CommentDAO(application);
+List<CommentDTO> commentLists = cdao.selectList(idx);
+cdao.close();
 //첨부파일 확장자 추출 및 이미지 타입 확인
 String ext = "", fileName = dto.getSfile();
 if(fileName!=null) ext = fileName.substring(fileName.lastIndexOf(".")+1);		
 String[] imgStr = {"png", "jpg", "gif", "bmp"};
 List<String> imgList = Arrays.asList(imgStr);
+
 boolean isImage = false;
 if(imgList.contains(ext)) isImage = true;
 %>
@@ -59,6 +64,12 @@ function deletePost() {
         form.submit();
     }
 }
+
+function likecnt() {
+        document.viewFrm.method = "post";
+        document.viewFrm.submit();
+    }
+}
 </script>
 </head>
  <body>
@@ -79,11 +90,11 @@ function deletePost() {
 				</div>
 				<div>
 
-<form enctype="multipart/form-data" name="viewFrm">
+<form name="viewFrm">
 <input type="hidden" name="idx" value="<%= idx %>" />
-<table class="table"  width="90%">
+<table class="table" width="90%">
 <thead>
-<tr><th colspan="4"><h4><%= dto.getTitle() %></h4></th></tr>
+<tr><th colspan="4"><h5><%= dto.getTitle() %></h5></th></tr>
 </thead>
 <tbody>
 	<tr>
@@ -93,17 +104,17 @@ function deletePost() {
 		<td style="vertical-align:middle; width:25%;">작성번호 : <%= dto.getIdx() %></td>
 	</tr>
 	<tr>
-		<td colspan="4" style="vertical-align:middle;"><%= dto.getContent().replace("\r\n", "<br/>") %>
-		<c:if test="${ not empty dto.ofile and isImage == true }">
-			<br /><img src="../Uploads/${ dto.sfile }" style="max-width:100%" />
-		</c:if>
+		<td colspan="4" style="vertical-align:middle;"><br /><%= dto.getContent().replace("\r\n", "<br/>") %><br />
+		<% if(dto.getOfile()!=null && isImage==true) { %>
+			<br /><img src="../Uploads/<%= dto.getSfile() %>" style="max-width:100%" />
+		<% } %><br />
 		</td>
 	</tr>
 	<tr>
 		<td style="vertical-align:middle;">첨부파일</td>
 		<td>
 		<% if(dto.getOfile()!=null) { %>
-			<a href="../sub01_download.do?ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><%= dto.getOfile() %></a>
+			<a href="sub01_download.jsp?ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><%= dto.getOfile() %></a>
 		<% } %>
 		</td>
 		<td style="vertical-align:middle;">다운횟수</td>
@@ -111,7 +122,32 @@ function deletePost() {
 	</tr>
 </tbody>
 </table>
-<table  width="100%">
+<tabe>
+<%
+if(!commentLists.isEmpty()){
+	for(CommentDTO cdto : commentLists){
+%>
+	<tr class="border-top">
+		<td><i class="fa-solid fa-face-smile" style="color:gray;"></i></td>
+		<td><%= cdto.getId() %> <span style="color:gray; margin-left:20px;"><%= cdto.getCommentdate() %></span>
+		<% if(cdto.getId().equals(UserId)){ %>		
+		<button type="button" onclick="commentEdit();">수정</button>
+		<% } %>
+		</td>
+		<td align="right"> <buttton tyep="button" onclick="likecnt();"><i class="fa-regular fa-heart"></i></buttton> 좋아요 <%= cdto.getLikecnt() %> | <a href="">신고</a></td>
+	</tr>
+	<tr class="border-bottom">
+		<td></td>
+		<td><%= cdto.getContent() %></td>
+		<td></td>
+	</tr>
+<%
+	}
+}
+%>
+</tabe>
+
+<table width="100%">
 	<colgroup>
 	    <col width="33%">
 	    <col width="33%">
@@ -126,7 +162,7 @@ function deletePost() {
 		<td width="33%" align="center">
 		<button type="button" onclick="location.href='sub01.jsp';">목록보기</button>
 		<% if(mdto.getAdmin()==1) { %>
-		<button type="button" onclick="location.href='sub01_edit.jsp?idx=<%= dto.getIdx() %>';">수정하기</button>
+		<button type="button" onclick="location.href='sub01_edit.jsp?idx=<%= dto.getIdx()%>';">수정하기</button>
 		<!-- 삭제버튼누르면 js함수 호출. 해당함수는 submit()통해 폼값을서버로전송 -->
 		<button tyep="button" onclick="deletePost();">삭제하기</button>
 		<%	} %>

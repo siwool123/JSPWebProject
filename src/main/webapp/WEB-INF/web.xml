@@ -36,7 +36,6 @@
   	<param-name>PAGES_PER_BLOCK</param-name>
   	<param-value>5</param-value>
   </context-param>
-  
    <context-param>
   	<param-name>maxPostSize</param-name>
   	<param-value>1024000</param-value>

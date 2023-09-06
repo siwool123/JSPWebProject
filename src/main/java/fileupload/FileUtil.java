@@ -59,7 +59,6 @@ public class FileUtil {
 		File newFile = new File(sDirectory + File.separator + now+ext);
 		
 		oldFile.renameTo(newFile);
-		
 		return now+ext;
 	}
 	

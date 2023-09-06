@@ -1,14 +1,32 @@
+<%@page import="java.util.stream.Collectors"%>
+<%@page import="java.io.IOException"%>
+<%@page import="java.io.FileOutputStream"%>
+<%@page import="java.io.BufferedOutputStream"%>
+<%@page import="java.io.BufferedInputStream"%>
+<%@page import="fileupload.FileUtil"%>
+<%@page import="java.nio.file.Paths"%>
+<%@page import="java.util.List"%>
 <%@page import="m1notice.NoticeDAO"%>
 <%@page import="m1notice.NoticeDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/IsLoggedIn.jsp" %>
 <%@ include file="../include/global_head.jsp" %>
+<%
+int idx = Integer.parseInt(request.getParameter("idx"));
+NoticeDAO dao = new NoticeDAO(application);
+NoticeDTO dto = dao.selectView(idx); 
+String sessionId = session.getAttribute("UserId").toString();
+if(!sessionId.equals(dto.getId())){
+	JSFunction.alertBack("작성자 본인만 수정할수있습니다.", out); return;
+}
+dao.close();
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>공지사항_작성하기</title>
+<title>공지사항 수정하기</title>
 <script type="text/javascript">
 /* 글쓰기 페이지에서 제목과 내용이 입력되었는지 검증하는 JS코드 */
 function validateForm(form) { 
@@ -43,24 +61,27 @@ function validateForm(form) {
 					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;공지사항<p>
 				</div>
 				<div>
-<form name="writeFrm" method="post" action="WriteProcess.jsp"
-      onsubmit="return validateForm(this);" enctype="multipart/form-data">
+<form name="writeFrm" method="post" action="EditProcess.jsp" onsubmit="return validateForm(this);" enctype="multipart/form-data">
+<input type="hidden" name="idx" value="<%= dto.getIdx() %>" />
+<input type="hidden" name="id" value="<%= dto.getId() %>" />
+<input type="hidden" name="prevOfile" value="<%= dto.getOfile() %>" />
+<input type="hidden" name="prevSfile" value="<%= dto.getSfile() %>" />
     <table class="table">
         <tr>
             <td>제목</td>
             <td>
-            <input type="text" name="title" style="width:100%;" class="form-control form-control-sm" />
+            <input type="text" name="title" style="width:100%;" class="form-control form-control-sm" value="<%= dto.getTitle() %>" />
             </td>
         </tr>
         <tr>
             <td>내용</td>
             <td>
-                <textarea name="content" style="width: 100%; height:200px;" class="form-control form-control-sm"></textarea>
+                <textarea name="content" style="width: 100%; height:200px;" class="form-control form-control-sm"><%= dto.getContent() %></textarea>
             </td>
         </tr>
         <tr>
 			<td>첨부파일</td>
-			<td><input type="file" name="ofile" multiple class="form-control form-control-sm" />
+			<td><input type="file" name="ofile" multiple class="form-control form-control-sm" id="formFileSm" />
 				<p>개별 파일 용량은 1MB까지 업로드 가능합니다.</p>
 			</td>
 		</tr>

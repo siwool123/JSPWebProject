@@ -16,7 +16,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://kit.fontawesome.com/f101226514.js" crossorigin="anonymous"></script><!-- 아이콘 -->
 <style>
-button {border:none; background-color:black; color:white; padding:4px 10px;}
+button, input[type=button] {border:none; background-color:black; color:white; padding:4px 10px;}
 a {text-decoration: none;}
 </style>
 </head>

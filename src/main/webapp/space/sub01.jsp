@@ -82,7 +82,7 @@ dao.close();
 </div>
 <div>
 <table class="table table-hover">
-   <thead class="table-secondary border-top">
+   <thead class="table-secondary">
      <tr align="center">
        <th width="10%">번호</th>
        <th width="50%">제목</th>
@@ -107,7 +107,7 @@ if(noticeLists.isEmpty()){
 %>
      <tr>
        <td align="center"><%= virtualNum %></td>
-       <td align="left"><a href="sub01_view.jsp?idx=<%= dto.getIdx() %>"><%= dto.getTitle() %></a></td>
+       <td align="left"><a href="sub01_view.jsp?idx=<%= dto.getIdx()%>"><%= dto.getTitle() %></a></td>
        <td align="center"><%= dto.getId() %></td>
        <td align="center"><%= dto.getVisitcnt() %></td>
        <td align="center"><%= dto.getPostdate() %></td>
@@ -119,14 +119,14 @@ if(noticeLists.isEmpty()){
 
    </tbody>
 </table>
-<table>
+<table width="100%">
 	<tr>
-		<td width="85%">
+		<td width="85%" class="text-center">
 		<%= BoardPage.pagingImg(totalcnt, pageSize, blockPage, pageNum, request.getRequestURI()) %>
 		</td>
 		<td width="*">
 <% if(mdto.getAdmin()==1){ %>		
-		<button type="button" onclick="location.href='sub01_write.jsp';" style="background-color:black; color:white; border:none; padding:4px 10px;">글쓰기</button>
+		<button type="button" onclick="location.href='sub01_write.jsp';" >글쓰기</button>
 <% } %>
 		</td>
 	</tr>
