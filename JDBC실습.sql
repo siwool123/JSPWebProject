@@ -937,3 +937,23 @@ create table sua_comment (
     foreign key(comment_board) references notice(idx),
     foreign key(comment_id) references member(id)
 );
+drop table sua_comment;
+create table sua_comment (
+    idx number primary key,
+    board_idx number references notice(idx),
+    id varchar2(20) references member(id),
+    commentdate date default sysdate,
+    parent_idx number,
+    content varchar2(1000) not null,
+    likecnt number,
+    replycnt number
+);
+alter table notice add likecnt number;
+alter table notice modify likecnt number default 0;
+create sequence seq_comment
+    increment by 1
+    start with 1
+    minvalue 1
+    nomaxvalue
+    nocycle
+    nocache;
