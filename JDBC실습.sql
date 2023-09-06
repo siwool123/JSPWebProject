@@ -892,6 +892,48 @@ create table member(
 );
 insert into member values 
 ('siwool123', '12341234', '강시울', 'siwool123@navr.com', null, '01056371055', '02452', '서울시 동대문구 이문로 37', '1421호', sysdate);
+
 select * from member where id='siwool123' and pw='12341234';
 alter table member modify add1 varchar2(6);
 update member set add1 = '02452';
+update member set phone='010-5637-1055' where id='siwool123';
+commit;
+alter table member add admin number(1);
+insert into member values 
+('admin', '1234', '관리자', 'siwool123@navr.com', 'y', '010-5637-1055', null, null, null, sysdate, 1);
+commit;
+----------회원전용 게시판 테이블 생성 (공지사항, 프로그램일정, 자유게시판, 사진게시판, 정보자료실)
+create table notice(
+    idx number primary key,
+    title varchar2(200) not null,
+    content varchar2(2000) not null,
+    id varchar2(10) not null,
+    postdate date default sysdate not null,
+    visitcnt number(6),
+    foreign key(id) references member(id)
+);
+create sequence seq_notice
+    increment by 1
+    start with 1
+    minvalue 1
+    nomaxvalue
+    nocycle
+    nocache;
+insert into notice values (seq_notice.nextval, '공지사항 테스트 제목_1', '공지사항 테스트 내용_1', 'admin', sysdate, 0);
+update member set email='siwool@naver.com' where id='ddddd123';
+commit;
+update member set name='강강강' where id='ddddd123';
+commit;
+select idx from notice where idx>1;
+select min(idx) from mvcboard where idx>300;
+alter table notice add (ofile varchar2(30), sfile varchar2(30), downcnt number);
+create table sua_comment (
+    comment_idx number primary key,
+    comment_board number,
+    comment_id varchar2(20),
+    comment_date date default sysdate not null,
+    comment_parent number,
+    comment_content varchar2(1000),
+    foreign key(comment_board) references notice(idx),
+    foreign key(comment_id) references member(id)
+);
