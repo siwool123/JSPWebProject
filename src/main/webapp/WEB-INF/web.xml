@@ -10,9 +10,8 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>main.jsp</welcome-file>
   </welcome-file-list>
-</web-app>
   
-    <context-param>
+  <context-param>
   	<param-name>OracleDriver</param-name>
   	<param-value>oracle.jdbc.OracleDriver</param-value>
   </context-param>
@@ -48,5 +47,3 @@
 </session-config>
 
 </web-app>
-
->>>>>>> refs/remotes/origin/main
