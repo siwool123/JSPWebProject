@@ -13,9 +13,10 @@
 <%@ include file="../include/IsLoggedIn.jsp" %>
 <%@ include file="../include/global_head.jsp" %>
 <%
+String tname = request.getParameter("tname");
 int idx = Integer.parseInt(request.getParameter("idx"));
 NoticeDAO dao = new NoticeDAO(application);
-NoticeDTO dto = dao.selectView(idx); 
+NoticeDTO dto = dao.selectView(idx, tname); 
 String sessionId = session.getAttribute("UserId").toString();
 if(!sessionId.equals(dto.getId())){
 	JSFunction.alertBack("작성자 본인만 수정할수있습니다.", out); return;
@@ -81,7 +82,7 @@ function validateForm(form) {
         </tr>
         <tr>
 			<td>첨부파일</td>
-			<td><input type="file" name="ofile" multiple class="form-control form-control-sm" id="formFileSm" />
+			<td><input type="file" name="ofile" value="1" multiple class="form-control form-control-sm" id="formFileSm" />
 				<p>개별 파일 용량은 1MB까지 업로드 가능합니다.</p>
 			</td>
 		</tr>

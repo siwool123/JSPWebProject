@@ -1,3 +1,5 @@
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
 <%@page import="m1notice.CommentDTO"%>
 <%@page import="m1notice.CommentDAO"%>
 <%@page import="fileupload.FileUtil"%>
@@ -19,17 +21,19 @@ MemberDTO mdto = mdao.viewMember(UserId);
 mdao.close();
 /*게시물 인출위해 파라미터를 받아온다. > dao객체생성하여 오라클연결
 > 게시물 조회수 증가 > 게시물 내용 추출하여 dto에 저장 */
+String tname = request.getParameter("tname");
 
 int idx = Integer.parseInt(request.getParameter("idx"));
 String ofile = request.getParameter("ofile"); 
 String sfile = request.getParameter("sfile");
 
 NoticeDAO dao = new NoticeDAO(application);
-dao.updateVisitcnt(idx);
-int maxIdx = dao.maxIdx();
-int prevIdx = dao.previousIdx(idx);
-int nextIdx = dao.nextIdx(idx);
-NoticeDTO dto = dao.selectView(idx);
+dao.updateVisitcnt(idx, tname);
+int[] maxmin = new int[2];
+maxmin = dao.maxmin(tname);
+int prevIdx = dao.previousIdx(idx, tname);
+int nextIdx = dao.nextIdx(idx, tname);
+NoticeDTO dto = dao.selectView(idx, tname);
 dao.close();
 dto.setContent(dto.getContent().replaceAll("\r\n", "<br/>"));
 
@@ -60,17 +64,27 @@ function deletePost() {
     if (confirmed) {
         var form = document.viewFrm;
         form.method = "post";
-        form.action = "sub01_delete.jsp";
+        form.action = "DeleteProcess.jsp";
         form.submit();
     }
 }
-
-function likecnt() {
-        document.viewFrm.method = "post";
-        document.viewFrm.submit();
+function validateForm(form) { 
+    if (form.content.value == "") {
+        alert("답글 내용을 입력하세요.");
+        form.content.focus();
+        return false;
     }
 }
+$(document).ready(function(){
+	$("#editComment").click(function(){
+		$(".hideContent").hide();
+		$("#hideFrm").show();
+	});
+});
 </script>
+<style>
+.hideContent {display:inline-block;}
+</style>
 </head>
  <body>
 	<center>
@@ -85,97 +99,131 @@ function likecnt() {
 			</div>
 			<div class="right_contents">
 				<div class="top_title">
+<% if(tname.equals("notice")) { %>
 					<img src="../images/space/sub01_title.gif" alt="공지사항" class="con_title" />
 					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;공지사항<p>
+<% } else if(tname.equals("freeboard")) { %>	
+				<img src="../images/space/sub03_title.gif" alt="자유게시판" class="con_title" />
+					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;자유게시판<p>
+<% } %>				
 				</div>
 				<div>
 
-<form name="viewFrm">
-<input type="hidden" name="idx" value="<%= idx %>" />
 <table class="table" width="90%">
 <thead>
 <tr><th colspan="4"><h5><%= dto.getTitle() %></h5></th></tr>
 </thead>
 <tbody>
 	<tr>
-		<td style="vertical-align:middle; width:25%;">작성자 : <%= dto.getId() %></td>
-		<td style="vertical-align:middle; width:25%;">작성일 : <%= dto.getPostdate() %></td>
-		<td style="vertical-align:middle; width:25%;">조회수 : <%= dto.getVisitcnt() %></td>
-		<td style="vertical-align:middle; width:25%;">작성번호 : <%= dto.getIdx() %></td>
+		<td style="width:25%;">작성자 : <%= dto.getId() %></td>
+		<td style="width:25%;">작성일 : <%= dto.getPostdate() %></td>
+		<td style="width:25%;">조회수 : <%= dto.getVisitcnt() %></td>
+		<td style="width:25%;">작성번호 : <%= dto.getIdx() %></td>
 	</tr>
 	<tr>
-		<td colspan="4" style="vertical-align:middle;"><br /><%= dto.getContent().replace("\r\n", "<br/>") %><br />
+		<td colspan="4"><br /><%= dto.getContent().replace("\r\n", "<br/>") %><br />
 		<% if(dto.getOfile()!=null && isImage==true) { %>
-			<br /><img src="../Uploads/<%= dto.getSfile() %>" style="max-width:100%" />
-		<% } %><br />
+			<div class="text-center"><img src="../Uploads/<%= dto.getSfile() %>" style="max-width:100%" />
+		<% } %></div>
 		</td>
 	</tr>
 	<tr>
-		<td style="vertical-align:middle;">첨부파일</td>
+		<td>첨부파일</td>
 		<td>
 		<% if(dto.getOfile()!=null) { %>
-			<a href="sub01_download.jsp?ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><%= dto.getOfile() %></a>
+			<a href="sub01_download.jsp?tname=<%= tname %>&ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><%= dto.getOfile() %></a>
 		<% } %>
 		</td>
-		<td style="vertical-align:middle;">다운횟수</td>
-		<td><%= dto.getDowncnt() %></td>
+		<td align="right">다운횟수 : <%= dto.getDowncnt() %></td>
+		<td align="right">좋아요 <buttton type="button"><i class="fa-regular fa-heart" style="color:red"></i></buttton> <%= dto.getLikecnt() %></td>
 	</tr>
 </tbody>
 </table>
-<tabe>
+
+<table class="table table-borderless" width="90%">
 <%
 if(!commentLists.isEmpty()){
 	for(CommentDTO cdto : commentLists){
 %>
-	<tr class="border-top">
-		<td><i class="fa-solid fa-face-smile" style="color:gray;"></i></td>
-		<td><%= cdto.getId() %> <span style="color:gray; margin-left:20px;"><%= cdto.getCommentdate() %></span>
-		<% if(cdto.getId().equals(UserId)){ %>		
-		<button type="button" onclick="commentEdit();">수정</button>
+	<tr>
+		<td width="5%"><i class="fa-solid fa-face-smile" style="font-size:20px;"></i></td>
+		<td width="64%"><%= cdto.getId() %> <span style="color:gray; margin-left:20px;"><%= cdto.getCommentdate() %></span>
+		<% if(cdto.getId().equals(UserId)){ %>	&nbsp;&nbsp;&nbsp;
+		<button id="editComment" class="hideContent">수정</button>&nbsp;
+<form name="commentDeleteFrm" method="post" action="CommentDelete.jsp" style="display:inline;">
+<input type="hidden" name="comment_idx" value="<%= cdto.getIdx() %>" />	
+<input type="hidden" name="idx" value="<%= idx %>" />
+		<button type="submit" onclick="deletePost();" class="hideContent">삭제</button>
+</form>	
 		<% } %>
 		</td>
-		<td align="right"> <buttton tyep="button" onclick="likecnt();"><i class="fa-regular fa-heart"></i></buttton> 좋아요 <%= cdto.getLikecnt() %> | <a href="">신고</a></td>
+		<td align="right"> <buttton type="button"><i class="fa-regular fa-heart" style="color:red"></i></buttton> 좋아요 <%= cdto.getLikecnt() %> | <a href="">신고</a></td>
 	</tr>
-	<tr class="border-bottom">
+	
+	<tr class="border-bottom" class="hideContent">
 		<td></td>
-		<td><%= cdto.getContent() %></td>
-		<td></td>
+		<td colspan="2"><%= cdto.getContent() %></td>
 	</tr>
+	
+<form name="commentEditFrm" method="post" action="CommentEdit.jsp" >
+<input type="hidden" name="comment_idx" value="<%= cdto.getIdx() %>" />
+<input type="hidden" name="idx" value="<%= idx %>" />
+	<tr style="display:none;" id="hideFrm" class="border-bottom" >
+		<td width="5%"></td>
+		<td>
+		<textarea name="content" style="width:100%;height:100px;"><%= cdto.getContent() %></textarea>
+		</td>
+		<td align="right"><button type="submit">수정완료</button></td>
+	</tr>
+</form>
+
 <%
 	}
 }
 %>
-</tabe>
-
-<table width="100%">
+</table>
+<form name="commentFrm" method="post" action="CommentWrite.jsp" onsubmit="return validateForm(this);">
+<input type="hidden" name="idx" value="<%= idx %>" />
+<table class="table">
+<tr>
+	<td width="5%"><i class="fa-solid fa-face-smile" style="font-size:20px;"></i></td>
+	<td>
+	<textarea name="content" style="width:100%;height:100px;"></textarea>
+	</td>
+	<td align="right"><button type="submit">답글입력</button></td>
+</tr>
+</table>
+</form>
+<table class="table table-borderless">
 	<colgroup>
 	    <col width="33%">
 	    <col width="33%">
 	    <col width="33%">
   	</colgroup>
 	<tr align="center">
-		<td width="33%" align="left">
-		<% if(idx<maxIdx){ %>
-		<a href="sub01_view.jsp?idx=<%= prevIdx %>">&lt; 이전글 보기</a>
-		<% } %>
+		<td width="23%" align="left">
+<% if(idx<maxmin[0]){ %>
+		<a href="sub01_view.jsp?tname=<%= tname %>&idx=<%= prevIdx %>">&lt; 이전글 보기</a>
+<% } %>
 		</td>
 		<td width="33%" align="center">
-		<button type="button" onclick="location.href='sub01.jsp';">목록보기</button>
-		<% if(mdto.getAdmin()==1) { %>
-		<button type="button" onclick="location.href='sub01_edit.jsp?idx=<%= dto.getIdx()%>';">수정하기</button>
+		<form name="viewFrm">
+		<input type="hidden" name="idx" value="<%= idx %>" />
+		<button type="button" onclick="location.href='sub01.jsp?tname=<%= tname %>';">목록보기</button>
+<% if(tname.equals("notice") && mdto.getAdmin()==1 || tname.equals("freeboard")){ %>
+		<button type="button" onclick="location.href='sub01_edit.jsp?tname=<%= tname %>&idx=<%= dto.getIdx()%>';">수정하기</button>
 		<!-- 삭제버튼누르면 js함수 호출. 해당함수는 submit()통해 폼값을서버로전송 -->
-		<button tyep="button" onclick="deletePost();">삭제하기</button>
-		<%	} %>
+		<button type="button" onclick="deletePost();">삭제하기</button>
+		</form> 
+<%	} %>
 		</td>
-		<td width="33%" align="right">
-		<% if(idx>1){ %>
-		<a href="sub01_view.jsp?idx=<%= nextIdx %>">다음글 보기 &gt;</a> 
-		<% } %>
+		<td width="23%" align="right">
+<% if(idx>maxmin[1]){ %>
+		<a href="sub01_view.jsp?tname=<%= tname %>&idx=<%= nextIdx %>">다음글 보기 &gt;</a> 
+<% } %>
 		</td>
 	</tr>
 </table>
-</form> 
-
 				</div>
 			</div>
 		</div>

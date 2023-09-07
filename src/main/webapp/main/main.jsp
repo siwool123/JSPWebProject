@@ -1,10 +1,30 @@
+<%@page import="m1notice.NoticeDTO"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@page import="m1notice.NoticeDAO"%>
 <%@page import="utils.CookieManager"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
 String sua_loginId = CookieManager.readCookie(request, "sua_loginId");
 String cookie = "";
 if(!sua_loginId.equals("")) cookie = "checked";
+
+//DB연결
+NoticeDAO dao = new NoticeDAO(application);
+Map<String, Object> map = new HashMap<>();
+map.put("start", 1);
+map.put("end", 4);
+
+//공지사항 최근게시물4개추출
+map.put("tname", "notice");
+List<NoticeDTO> noticeL = dao.selectListPage(map);
+
+//자게 최근게시물 4개추출
+map.put("tname", "freeboard");
+List<NoticeDTO> freeboardL = dao.selectListPage(map);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -86,21 +106,23 @@ if (session.getAttribute("UserId") == null) {
 				</div>
 			</div>
 			<div class="main_con_center">
-				<p class="main_title"><img src="../images/main_title02.gif" alt="공지사항 NOTICE" /><a href="../space/sub01.jsp"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
+				<p class="main_title"><img src="../images/main_title02.gif" alt="공지사항 NOTICE" /><a href="../space/sub01.jsp?tname=notice"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
 				<ul class="main_board_list">
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
+<% if(!noticeL.isEmpty()){
+	for(NoticeDTO dto : noticeL){ %>
+					<li><a href="../space/sub01_view.jsp?tname=notice&idx=<%= dto.getIdx()%>"><%= dto.getTitle() %></a><span><%= dto.getPostdate() %></span></li>
+<% }
+} %>
 				</ul>
 			</div>
 			<div class="main_con_right">
-				<p class="main_title"><img src="../images/main_title03.gif" alt="자유게시판 FREE BOARD" /><a href="../space/sub03.jsp"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
+				<p class="main_title"><img src="../images/main_title03.gif" alt="자유게시판 FREE BOARD" /><a href="../space/sub03.jsp?tname=freeboard"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
 				<ul class="main_board_list">
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
-					<li><a href="">마포 구립 장애인 직업재활센터 홈페이지</a><span>2012.01.26</span></li>
+<% if(!freeboardL.isEmpty()){
+	for(NoticeDTO dto : freeboardL){ %>
+					<li><a href="../space/sub01_view.jsp?tname=freeboard&idx=<%= dto.getIdx()%>"><%= dto.getTitle() %></a><span><%= dto.getPostdate() %></span></li>
+<% }
+} %>
 				</ul>
 			</div>
 		</div>

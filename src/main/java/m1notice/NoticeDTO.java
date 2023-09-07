@@ -16,6 +16,8 @@ public class NoticeDTO {
 	private int downcnt;
 	private String name;
 	private int likecnt;
+	private String tname;
+	private String seq;
 	
 	public int getIdx() {
 		return idx;
@@ -82,6 +84,18 @@ public class NoticeDTO {
 	}
 	public void setLikecnt(int likecnt) {
 		this.likecnt = likecnt;
+	}
+	public String getTname() {
+		return tname;
+	}
+	public void setTname(String tname) {
+		this.tname = tname;
+	}
+	public String getSeq() {
+		return seq;
+	}
+	public void setSeq(String seq) {
+		this.seq = seq;
 	}
 	
 }

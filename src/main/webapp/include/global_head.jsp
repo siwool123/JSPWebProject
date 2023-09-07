@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -18,5 +19,6 @@
 <style>
 button, input[type=button] {border:none; background-color:black; color:white; padding:4px 10px;}
 a {text-decoration: none;}
+.active>.page-link, .page-link.active {background-color:black !important; border-color:black !important;}
 </style>
 </head>

@@ -16,7 +16,8 @@
 글쓰기 처리 페이지에서도 반드시 로그인을 확인해야한다.  -->    
  
 <%
-//클라이언트가 작성한 폼값을 받아온다. 
+//클라이언트가 작성한 폼값을 받아온다.
+String tname = request.getParameter("tname");
 String sDirectory = request.getServletContext().getRealPath("/Uploads/");
 
 String title = request.getParameter("title");
@@ -55,18 +56,18 @@ for (Part filePart : fileParts) {
     dto.setOfile(oFileName);
     dto.setSfile(sFileName);
 }
-
+dto.setTname(tname);
 NoticeDAO dao = new NoticeDAO(application);
 int iResult = dao.insertWrite(dto); //기존처럼 게시물 1개를 등록할때 사용
 //더미게시물입력위해 반복문 사용
-/* int iResult = 0;
+/*int iResult = 0;
 for(int i=1; i<=100; i++){
 	dto.setTitle(title+"-"+i);
 	iResult = dao.insertWrite(dto);
-} */
+}*/
 dao.close();
 
-if (iResult == 1) JSFunction.alertLocation("게시글 작성에 성공했습니다.", "sub01.jsp", out);
+if (iResult == 1) JSFunction.alertLocation("게시글 작성에 성공했습니다.", "sub01.jsp?tname="+tname, out);
 else JSFunction.alertBack("게시글 작성에 실패하였습니다.", out);
 %>
 

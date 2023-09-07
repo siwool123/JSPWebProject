@@ -18,7 +18,7 @@ public class NoticeDAO extends JDBConnect {
 	//게시물 개수 카운트하여 int형으로 반환하는메소드
 	public int selectCnt(Map<String, Object> map) {
 		int totalcnt = 0;
-		String sql = "SELECT COUNT(*) FROM notice";
+		String sql = "SELECT COUNT(*) FROM "+map.get("tname");
 		if(map.get("searchWord")!=null) sql += " WHERE "+map.get("searchField")+" LIKE '%"+map.get("searchWord")+"%'";
 		try { 
 			stmt = con.createStatement(); //정적 쿼리실행위한 Statement 객체생성
@@ -32,26 +32,11 @@ public class NoticeDAO extends JDBConnect {
 		return totalcnt;
 	}
 	
-	public int maxIdx() {
-		int maxIdx = 0;
-		String sql = "SELECT MAX(idx) FROM notice";
-		try { 
-			stmt = con.createStatement(); //정적 쿼리실행위한 Statement 객체생성
-			rs = stmt.executeQuery(sql);
-			rs.next(); //커서를 첫번쨰 행으로 이동하여 레코드를 읽는다. > 첫번째 컬럼 count(*) 의 값을 가져와서 변수에 저장
-			maxIdx = rs.getInt(1);
-		}catch(Exception e) {
-			System.out.println("최대 게시물 번호 구하는 중 예외발생");
-			e.printStackTrace();
-		}
-		return maxIdx;
-	}
-	
 /* 작성게시물을추출하여반환 > 반환값은 여러개 레코드를 반환할수있고 순서 보장해야하므로 List컬렉션 사용 
  * List컬렉션 생성 > 이때 타입매개변수는 notice 테이블 대상으로 하므로 NoticeDTO로 설정  */
 	public List<NoticeDTO> selectList(Map<String, Object> map) {
 		List<NoticeDTO> bbs = new Vector<NoticeDTO>(); //벡터는 리스트의 일종. ArrayList와 유사
-		String sql = "SELECT * FROM notice";
+		String sql = "SELECT * FROM "+map.get("tname");
 		if(map.get("searchWord")!=null) sql += " WHERE "+map.get("searchField")+" LIKE '%"+map.get("searchWord")+"%'";
 		sql += " ORDER BY idx DESC";
 		try {
@@ -84,7 +69,7 @@ public class NoticeDAO extends JDBConnect {
 	public int insertWrite(NoticeDTO dto) {
 		int result=0;
 		try {
-			String sql = "INSERT INTO notice VALUES (seq_notice.NEXTVAL, ?, ?, ?, sysdate, 0, ?, ?, 0, 0)";
+			String sql = "INSERT INTO "+dto.getTname()+" VALUES (seq_notice.NEXTVAL, ?, ?, ?, sysdate, 0, ?, ?, 0, 0)";
 			psmt = con.prepareStatement(sql);
 			psmt.setString(1, dto.getTitle());
 			psmt.setString(2, dto.getContent());
@@ -99,9 +84,9 @@ public class NoticeDAO extends JDBConnect {
 		return result;
 	}
 	
-	public NoticeDTO selectView(int idx) {
+	public NoticeDTO selectView(int idx, String tname) {
 		NoticeDTO dto = new NoticeDTO();
-		String sql = "SELECT N.*, M.name FROM member M INNER JOIN notice N ON M.id=N.id WHERE N.idx=?";
+		String sql = "SELECT N.*, M.name FROM member M INNER JOIN "+tname+" N ON M.id=N.id WHERE N.idx=?";
 		
 		try {
 			psmt = con.prepareStatement(sql);
@@ -131,8 +116,8 @@ public class NoticeDAO extends JDBConnect {
 		return dto;
 	}
 	
-	public void updateVisitcnt(int idx) {
-		String sql = "UPDATE notice SET visitcnt=visitcnt+1 WHERE idx=?";
+	public void updateVisitcnt(int idx, String tname) {
+		String sql = "UPDATE "+tname+" SET visitcnt=visitcnt+1 WHERE idx=?";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, idx);
@@ -147,7 +132,7 @@ public class NoticeDAO extends JDBConnect {
 	public int updateEdit(NoticeDTO dto) {
 		int result=0;
 		try {
-			String sql = "UPDATE notice SET title=?, content=?, ofile=?, sfile=? WHERE idx=?";
+			String sql = "UPDATE "+dto.getTname()+" SET title=?, content=?, ofile=?, sfile=? WHERE idx=?";
 			psmt = con.prepareStatement(sql);
 			psmt.setString(1, dto.getTitle());
 			psmt.setString(2, dto.getContent());
@@ -165,7 +150,7 @@ public class NoticeDAO extends JDBConnect {
 	public int deletePost(NoticeDTO dto) {
 		int result=0;
 		try {
-			String sql = "DELETE FROM notice WHERE idx=?";
+			String sql = "DELETE FROM "+dto.getTname()+" WHERE idx=?";
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, dto.getIdx());
 			result = psmt.executeUpdate();
@@ -179,7 +164,7 @@ public class NoticeDAO extends JDBConnect {
 	public List<NoticeDTO> selectListPage(Map<String, Object> map) {
 		List<NoticeDTO> bbs = new Vector<NoticeDTO>(); 
 		/* 검색조선일치하는게시물얻어온후 각페이지에 출력할 쿼리작성 */
-		String sql = "SELECT * FROM (SELECT T1.*, ROWNUM R FROM (SELECT * FROM notice";
+		String sql = "SELECT * FROM (SELECT T1.*, ROWNUM R FROM (SELECT * FROM "+map.get("tname");
 		if(map.get("searchWord")!=null) {
 			sql += " WHERE " + map.get("searchField")+ " LIKE '%" + map.get("searchWord") + "%'";
 		}
@@ -210,9 +195,9 @@ public class NoticeDAO extends JDBConnect {
 		return bbs;
 	}
 	
-	public int previousIdx(int idx) {
+	public int previousIdx(int idx, String tname) {
 		int result = 0;
-		String sql = "SELECT MIN(idx) FROM notice WHERE idx>"+idx;
+		String sql = "SELECT MIN(idx) FROM "+tname+" WHERE idx>"+idx;
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
@@ -225,9 +210,9 @@ public class NoticeDAO extends JDBConnect {
 		return result;
 	}
 	
-	public int nextIdx(int idx) {
+	public int nextIdx(int idx, String tname) {
 		int result = 0;
-		String sql = "SELECT MAX(idx) FROM notice WHERE idx<"+idx;
+		String sql = "SELECT MAX(idx) FROM "+tname+" WHERE idx<"+idx;
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
@@ -240,8 +225,24 @@ public class NoticeDAO extends JDBConnect {
 		return result;
 	}
 	
-	public void downcntPlus(int idx) {
-		String sql = "UPDATE notice SET downcnt=NVL(downcnt, 0)+1 WHERE idx="+idx;
+	public int[] maxmin(String tname) {
+		int[] maxmin = new int[2];
+		String sql = "SELECT MAX(idx), MIN(idx) FROM "+tname;
+		try { 
+			stmt = con.createStatement(); //정적 쿼리실행위한 Statement 객체생성
+			rs = stmt.executeQuery(sql);
+			rs.next(); //커서를 첫번쨰 행으로 이동하여 레코드를 읽는다. > 첫번째 컬럼 count(*) 의 값을 가져와서 변수에 저장
+			maxmin[0] = rs.getInt(1);
+			maxmin[1] = rs.getInt(2);
+		}catch(Exception e) {
+			System.out.println("최대최소 게시물 번호 구하는 중 예외발생");
+			e.printStackTrace();
+		}
+		return maxmin;
+	}
+	
+	public void downcntPlus(int idx, String tname) {
+		String sql = "UPDATE "+tname+" SET downcnt=NVL(downcnt, 0)+1 WHERE idx="+idx;
 		try {
 			stmt = con.createStatement();
 			stmt.executeQuery(sql);
@@ -251,8 +252,8 @@ public class NoticeDAO extends JDBConnect {
 		}
 	}
 	
-	public void updateLikecnt(int idx) {
-		String sql = "UPDATE notice SET likecnt=NVL(likecnt, 0)+1 WHERE idx=?";
+	public void updateLikecnt(int idx, String tname) {
+		String sql = "UPDATE "+tname+" SET likecnt=NVL(likecnt, 0)+1 WHERE idx=?";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, idx);
