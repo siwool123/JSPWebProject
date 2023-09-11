@@ -957,3 +957,45 @@ create sequence seq_comment
     nomaxvalue
     nocycle
     nocache;
+update member set admin=2 where id='abced123';
+commit;
+
+create table freeboard(
+    idx number primary key,
+    title varchar2(200) not null,
+    content varchar2(2000) not null,
+    id varchar2(10) not null,
+    postdate date default sysdate not null,
+    visitcnt number(6),
+    foreign key(id) references member(id)
+);
+create sequence seq_freeboard
+    increment by 1
+    start with 1
+    minvalue 1
+    nomaxvalue
+    nocycle
+    nocache;
+alter table freeboard add (ofile varchar2(30), sfile varchar2(30), downcnt number, likecnt number);
+insert into freeboard values (seq_freeboard.nextval, '자유게시판 테스트 제목_1', '자유게시판 테스트 내용_1', 'abced123', sysdate, 0, null, null, 0, 0);
+alter table member rename column admin to grade;
+update member set grade=3 where grade is null;
+commit;
+alter table notice modify (ofile varchar2(50), title varchar2(450), content varchar2(2002));
+alter table freeboard modify (ofile varchar2(50), title varchar2(450), content varchar2(2002));
+create table imageboard as select * from freeboard;
+delete from imageboard where title like '자유게시판%';
+create table databoard as select * from freeboard where 1=0;
+alter table notice modify (title varchar2(200), content varchar2(2000));
+alter table freeboard modify (title varchar2(200), content varchar2(2000));
+alter table imageboard modify (title varchar2(200), content varchar2(2000));
+alter table databoard modify (title varchar2(200), content varchar2(2000));
+alter table notice modify ofile varchar2(70);
+alter table freeboard modify ofile varchar2(70);
+alter table imageboard modify ofile varchar2(70);
+alter table databoard modify ofile varchar2(70);
+create table staffboard as select * from freeboard where 1=0;
+create table guardboard as select * from freeboard where 1=0;
+create table boardfile (idx number, board_idx number, ofile varchar2(70), sfile varchar2(30), downcnt number);
+alter table boardfile add postdate date;
+delete from staffboard;
