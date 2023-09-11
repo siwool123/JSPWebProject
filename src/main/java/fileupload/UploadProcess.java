@@ -2,6 +2,7 @@ package fileupload;
 
 import java.io.IOException;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -48,6 +49,7 @@ public class UploadProcess extends HttpServlet {
 	}
 	
 	private void insertMyFile(HttpServletRequest req, String oFileName, String sFileName) {
+		int idx = Integer.parseInt(req.getParameter("idx"));
 		String title = req.getParameter("title");
 		String[] cateArr = req.getParameterValues("cate");
 		StringBuffer cateBuf = new StringBuffer();
@@ -59,14 +61,13 @@ public class UploadProcess extends HttpServlet {
 		
 /* dto객체에 폼값과 파일명(원본, 저장) 저장 > DAO객체생성하여 DBCP통해 오라클 연결
  * dto 객체 전달하여 테이블에 insert 한다 */
-		MyFileDTO dto = new MyFileDTO();
-		dto.setTitle(title);
-		dto.setCate(cateBuf.toString());
-		dto.setOfile(oFileName);
-		dto.setSfile(sFileName);
-		
-		MyFileDAO dao = new MyFileDAO();
-		dao.insertFile(dto);
-		dao.close();
+		FileDTO fdto = new FileDTO();
+		fdto.setBoard_idx(idx);
+		fdto.setOfile(oFileName);
+		fdto.setSfile(sFileName);
+		ServletContext application = getServletContext();
+		FileDAO fdao = new FileDAO(application);
+		fdao.insertFile(fdto);
+		fdao.close();
 	}
 }

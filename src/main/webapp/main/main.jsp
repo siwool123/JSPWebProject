@@ -117,7 +117,7 @@ if (session.getAttribute("UserId") == null) {
 				<ul class="main_board_list">
 <% if(!noticeL.isEmpty()){
 	for(NoticeDTO dto : noticeL){ %>
-					<li><a href="../space/sub01_view.jsp?tname=notice&idx=<%= dto.getIdx()%>"><%= dto.getTitle() %></a><span><%= dto.getPostdate() %></span></li>
+					<li><a href="../space/sub01_view.jsp?tname=notice&idx=<%= dto.getIdx()%>"><%= JSFunction.titleCut(dto.getTitle(), 23) %></a><span><%= dto.getPostdate() %></span></li>
 <% }
 } %>
 				</ul>
@@ -127,7 +127,7 @@ if (session.getAttribute("UserId") == null) {
 				<ul class="main_board_list">
 <% if(!freeboardL.isEmpty()){
 	for(NoticeDTO dto : freeboardL){ %>
-					<li><a href="../space/sub01_view.jsp?tname=freeboard&idx=<%= dto.getIdx()%>"><%= dto.getTitle() %></a><span><%= dto.getPostdate() %></span></li>
+					<li><a href="../space/sub01_view.jsp?tname=freeboard&idx=<%= dto.getIdx()%>"><%= JSFunction.titleCut(dto.getTitle(), 23) %></a><span><%= dto.getPostdate() %></span></li>
 <% }
 } %>
 				</ul>

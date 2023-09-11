@@ -38,7 +38,7 @@
   </context-param>
    <context-param>
   	<param-name>maxPostSize</param-name>
-  	<param-value>1024000</param-value>
+  	<param-value>2048000</param-value>
   </context-param>
   
  <!-- 세션유지시간설정 -->

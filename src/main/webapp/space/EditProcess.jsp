@@ -14,7 +14,6 @@
 <%@ include file="../include/IsLoggedIn.jsp" %>
 <!-- 로그인 페이지에 오랫동안 머물러 세션이 삭제되는 경우가 있으므로
 글쓰기 처리 페이지에서도 반드시 로그인을 확인해야한다.  -->    
- 
 <%
 //클라이언트가 작성한 폼값을 받아온다.
 String tname = request.getParameter("tname");
