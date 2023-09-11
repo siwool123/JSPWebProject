@@ -8,7 +8,7 @@ function formValidate(frm) {
         alert("이름을 입력해주세요.");
         frm.name.focus(); return false;
     }
-    if (frm.id.value == '') {
+/*     if (frm.id.value == '') {
         alert("아이디를 입력해주세요.");
         frm.id.focus(); return false;
     }
@@ -19,9 +19,10 @@ function formValidate(frm) {
     if (!isNaN(frm.id.value.charAt(0))) {
         alert('아이디는 숫자로 시작할 수 없습니다.');
         frm.id.focus(); return false;
-    }
-    if (!frm.id.readOnly) {
-        alert('아이디 중복확인이 필요합니다.'); return false;
+    } */
+    var textColor = window.getComputedStyle(document.getElementById('idResult'), null).getPropertyValue("color");
+    if (textColor=='rgb(255, 0, 0)') {
+        alert('아이디가 적합하지 않습니다.'); frm.id.focus(); return false;
     }
     //패스워드 입력 확인
     if (frm.pw.value == '') {
@@ -45,7 +46,7 @@ function formValidate(frm) {
 	}
 }
 //아이디 중복확인 
-function idCheck(){
+/* function idCheck(){
     if(document.joinForm.id.value==''){
         alert("아이디를 입력후 중복확인 해주세요.");
         document.joinForm.id.focus();
@@ -53,7 +54,7 @@ function idCheck(){
         window.open('idcheck.jsp?id='+document.joinForm.id.value, 'idOver', 'width=500,height=300');
         document.joinForm.id.readOnly = true;
     }
-}
+} */
 function inputEmail(frm) {
     var choiceDomain = frm.email_domain.value;
     if (choiceDomain == '') {
@@ -75,11 +76,27 @@ function focusMove(x, y, z) {
     }
 }
 $(function () {
-	$("input[name=pw2]").keyup(function () {
+	$('input[name=pw2]').keyup(function () {
         if ($(this).val()!=$("input[name=pw]").val()) {
 			$("#pwResult").text("비밀번호가 일치하지 않습니다.").css("color", "red");
         }else $("#pwResult").text("비밀번호가 일치합니다.").css("color", "green");
     });
+	$('input[name=id]').keyup(function(){
+		let params = {id:$('#id').val()}, id = $(this).val();
+		$.post('idcheck.jsp', params, function(resD){
+			console.log('콜백데이터', resD);
+			if(resD==1) {
+				$('#idResult').html('이미 존재하는 아이디입니다.');
+				$('#idResult').css('color', 'red');
+			}else if(resD==0 && id.length>7 && id.length<13 && isNaN(id.charAt(0))){
+				$('#idResult').html('사용 가능한 아이디 입니다.');
+				$('#idResult').css('color', 'green');
+			}else{
+				$('#idResult').html('아이디는 영문소문자로 시작하는 8~12자로 작성해주세요.');
+				$('#idResult').css('color', 'red');
+			}
+		});
+	});
 });
 </script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -131,7 +148,10 @@ function postOpen() {
 					<tr>
 						<th><img src="../images/join_tit002.gif" /></th>
 						<td><input type="text" name="id" id="id" value="" class="join_input" />&nbsp;
-						<a onclick="idCheck(this.form);" style="cursor:pointer;"><img src="../images/btn_idcheck.gif" alt="중복확인"/></a>&nbsp;&nbsp;<span>* 8자 이상 12자 이내의 영문/숫자 조합하여 공백 없이 기입</span></td>
+						<!-- <a onclick="idCheck();" style="cursor:pointer;"><img src="../images/btn_idcheck.gif" alt="중복확인"/></a> -->
+						&nbsp;<span>* 8자 이상 12자 이내의 영문/숫자 조합하여 공백 없이 기입</span>
+						<div id="idResult" class="mt-2 mb-2"></div>
+						</td>
 					</tr>
 					<tr>
 						<th><img src="../images/join_tit003.gif" /></th>

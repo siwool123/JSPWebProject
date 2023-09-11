@@ -17,6 +17,7 @@
  
 <%
 //클라이언트가 작성한 폼값을 받아온다.
+String tname = request.getParameter("tname");
 int idx = Integer.parseInt(request.getParameter("idx"));
 String title = request.getParameter("title");
 String content = request.getParameter("content");
@@ -24,6 +25,7 @@ String prevOfile = request.getParameter("prevOfile");
 String prevSfile = request.getParameter("prevSfile");
 
 NoticeDTO dto = new NoticeDTO(); //폼값을 DTO객체에 저장한다.
+dto.setTname(tname);
 dto.setIdx(idx);
 dto.setTitle(title);
 dto.setContent(content);
@@ -78,7 +80,7 @@ dao.close();
 
 System.out.println("dto세팅된 파일명 : " + dto.getOfile()+" / "+dto.getSfile()+" / 결과값 : "+iResult);
 
-if (iResult == 1) JSFunction.alertLocation("게시글 수정에 성공했습니다.", "sub01_view.jsp?idx="+dto.getIdx(), out);
+if (iResult == 1) JSFunction.alertLocation("게시글 수정에 성공했습니다.", "sub01_view.jsp?tname="+tname+"&idx="+dto.getIdx(), out);
 else JSFunction.alertBack("게시글 수정에 실패하였습니다.", out);
 %>
 

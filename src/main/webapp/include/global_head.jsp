@@ -20,5 +20,7 @@
 button, input[type=button] {border:none; background-color:black; color:white; padding:4px 10px;}
 a {text-decoration: none;}
 .active>.page-link, .page-link.active {background-color:black !important; border-color:black !important;}
+.fa-heart {color:gray; font-size:20px; margin:0 10px; cursor:pointer;}
+.fa-angle-left, .fa-angles-left, .fa-angle-right, .fa-angles-right {font-size: 18px;}
 </style>
 </head>

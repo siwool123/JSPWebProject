@@ -25,7 +25,44 @@ function validateForm(form) {
         form.content.focus();
         return false;
     }
-}
+<% if(tname.equals("imageboard")) { %>  
+	var ofile = document.getElementById('ofile');
+	var selectFile = ofile.files[0];
+    if (!selectFile)) {
+        alert("1MB 이하의 이미지 파일을 첨부해주세요.");
+        ofile.focus();
+        return false;
+    } 
+<%}%>
+} 
+/* $(function(){
+	$('input[type=submit]').click({
+		if ($('input[name=title]') == '') {
+	        alert("제목을 입력하세요.");
+	        $('input[name=title]').focus();
+	        return false;
+	    }
+	    if ($('input[name=content]') == '') {
+	        alert("내용을 입력하세요.");
+	        $('input[name=content]').focus();
+	        return false;
+	    }
+	    var imgFile = $('#ofile').val();
+		var fileForm = /(.*?\.(jpg|jpeg|png|gif|bmp)$/;
+		var maxSize = 1024*1024*5;
+		var fileSize;
+		if($(imgFile==''){
+			alert('이미지 파일을 첨부해주세요.');
+			$('input[type=file]').focus();
+			return false;
+		}
+		if(imgFile!='' && imgFile!=null){
+			fileSize = $('#ofile').files[0].size;
+			if(!imgFile.match(fileForm)){alert('이미지 파일만 업로드 가능합니다.'); return false;}
+			else if(fileSize>=maxSize){alert('파일 사이즈는 5MB까지 가능'); return false;}
+		}		
+	});
+}); */
 </script>
 </head>
 
@@ -48,28 +85,36 @@ function validateForm(form) {
 <% } else if(tname.equals("freeboard")) { %>	
 				<img src="../images/space/sub03_title.gif" alt="자유게시판" class="con_title" />
 					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;자유게시판<p>
-<% } %>				
+<% } else if(tname.equals("imageboard")) { %>	
+				<img src="../images/space/sub04_title.gif" alt="사진게시판" class="con_title" />
+					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;사진게시판<p>
+<%} else if(tname.equals("databoard")) { %>	
+				<img src="../images/space/sub05_title.gif" alt="정보자료실" class="con_title" />
+					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;정보자료실<p>
+<% } %>			
 				</div>
 				<div>
-<form name="writeFrm" method="post" action="WriteProcess.jsp"
-      onsubmit="return validateForm(this);" enctype="multipart/form-data">
+<form id="writeFrm" method="post" action="WriteProcess.jsp?tname=<%= tname %>"
+      onsubmit="return validateForm(this.form);" enctype="multipart/form-data" multiple>
     <table class="table">
         <tr>
             <td>제목</td>
             <td>
-            <input type="text" name="title" style="width:100%;" class="form-control form-control-sm" />
+            <input type="text" name="title" style="width:100%;" class="form-control form-control-sm" maxlength='200' />
             </td>
         </tr>
         <tr>
             <td>내용</td>
             <td>
-                <textarea name="content" style="width: 100%; height:200px;" class="form-control form-control-sm"></textarea>
+                <textarea name="content" style="width: 100%; height:200px;" class="form-control form-control-sm"  maxlength='2000'></textarea>
             </td>
         </tr>
         <tr>
 			<td>첨부파일</td>
-			<td><input type="file" name="ofile" multiple class="form-control form-control-sm" />
-				<p>개별 파일 용량은 1MB까지 업로드 가능합니다.</p>
+			<td><input type="file" name="ofile" id="ofile" multiple class="form-control form-control-sm"
+			<% if(tname.equals("imageboard")){ %> accept=".jpg, .png, .gif" <% } %>
+			 />
+				<br><p>개별 파일 용량은 1MB까지 업로드 가능합니다.</p>
 			</td>
 		</tr>
         <tr>

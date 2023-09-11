@@ -39,16 +39,18 @@ public class CommentDAO extends JDBConnect {
 		return bbs;
 	}
 	
-	public void updateLikecnt(int idx) {
+	public int updateLikecnt(int idx) {
+		int result = 0;
 		String sql = "UPDATE sua_comment SET likecnt=NVL(likecnt, 0)+1 WHERE idx=?";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, idx);
-			psmt.executeQuery();
+			result = psmt.executeUpdate();
 		}catch(Exception e) {
 			System.out.println("좋아요 수 증가 중 예외발생");
 			e.printStackTrace();
 		}
+		return result;
 	}
 	
 	public void updateReplycnt(int idx) {

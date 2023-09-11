@@ -18,8 +18,8 @@ public class BoardPage {
     	int pageTemp = ((pageNum - 1) / blockPage) * blockPage + 1;
 
         if (pageTemp != 1) {
-            pagingStr += "<a href='" + reqUrl + "?pageNum=1'>[첫 페이지]</a>&nbsp;";            
-            pagingStr += "<a href='" + reqUrl + "?pageNum=" + (pageTemp - 1)+ "'>[이전 블록]</a>";
+            pagingStr += "<a href='" + reqUrl + "&pageNum=1'>[첫 페이지]</a>&nbsp;";            
+            pagingStr += "<a href='" + reqUrl + "&pageNum=" + (pageTemp - 1)+ "'>[이전 블록]</a>";
         }
 /* 각 페이지 번호로 바로가기 링크 출력
   앞에서 계산한 pageTemp를 blockPage만큼 반복해서 출력한다. 이때 1씩 증가시켜준다. 즉 한블록당 5페이지를 출력하게된다. 
@@ -31,15 +31,15 @@ public class BoardPage {
         int blockCount = 1;
         while (blockCount <= blockPage && pageTemp <= totalPages) {
             if (pageTemp == pageNum) pagingStr += "&nbsp;" + pageTemp + "&nbsp;";
-            else pagingStr += "&nbsp;<a href='" + reqUrl + "?pageNum=" + pageTemp+ "'>" + pageTemp + "</a>&nbsp;";
+            else pagingStr += "&nbsp;<a href='" + reqUrl + "&pageNum=" + pageTemp+ "'>" + pageTemp + "</a>&nbsp;";
             pageTemp++;
             blockCount++;
         }
         
         //다음 페이지 블록 바로가기 링크 추가 > 마지막 페이지가 아닌 경우에만 다음블럭을 출력한다. 
         if (pageTemp <= totalPages) {
-            pagingStr += "<a href='" + reqUrl + "?pageNum=" + pageTemp+ "'>[다음 블록]</a>&nbsp;";
-            pagingStr += "<a href='" + reqUrl + "?pageNum=" + totalPages+ "'>[마지막 페이지]</a>";
+            pagingStr += "<a href='" + reqUrl + "&pageNum=" + pageTemp+ "'>[다음 블록]</a>&nbsp;";
+            pagingStr += "<a href='" + reqUrl + "&pageNum=" + totalPages+ "'>[마지막 페이지]</a>";
         }
         return pagingStr;
     }
@@ -52,20 +52,20 @@ public class BoardPage {
 		int pageTemp = ((pageNum-1)/blockPage)*blockPage+1;
 
 		if(pageTemp!=1) {
-			pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"?pageNum=1'><i class='fa-solid fa-angles-left'></i></a></li>";
-			pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"?pageNum="+(pageTemp-1)+"'><i class='fa-solid fa-angle-left'></i></a></li>";
+			pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"&pageNum=1'><i class='fa-solid fa-angles-left'></i></a></li>";
+			pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"&pageNum="+(pageTemp-1)+"'><i class='fa-solid fa-angle-left'></i></a></li>";
 		}
 		
 		int blockcnt = 1;
 		while(blockcnt <= blockPage && pageTemp <= totalPages) {
 			if(pageTemp==pageNum) pagingStr += "<li class='page-item'><a class='page-link active'>"+pageTemp+"</a></li>";
-			else pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"?pageNum="+pageTemp+"'>"+pageTemp+"</a></li>";
+			else pagingStr += "<li class='page-item'><a class='page-link' href='"+reqUrl+"&pageNum="+pageTemp+"'>"+pageTemp+"</a></li>";
 			pageTemp++;
 			blockcnt++;
 		}
 		 if (pageTemp <= totalPages) {
-	        pagingStr += "<li class='page-item'><a class='page-link' href='" + reqUrl + "?pageNum="+pageTemp+"'><i class='fa-solid fa-angle-right'></i></a></li>";
-	        pagingStr += "<li class='page-item'><a class='page-link' href='" + reqUrl + "?pageNum="+totalPages+"'><i class='fa-solid fa-angles-right'></i></a></li>";
+	        pagingStr += "<li class='page-item'><a class='page-link' href='" + reqUrl + "&pageNum="+pageTemp+"'><i class='fa-solid fa-angle-right'></i></a></li>";
+	        pagingStr += "<li class='page-item'><a class='page-link' href='" + reqUrl + "&pageNum="+totalPages+"'><i class='fa-solid fa-angles-right'></i></a></li>";
 	     }
 		 pagingStr += "</ul>";
 	     return pagingStr;

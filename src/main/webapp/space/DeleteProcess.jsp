@@ -20,6 +20,7 @@ String sessionId = session.getAttribute("UserId").toString();
 int delResult = 0;
 if(dto.getId().equals(sessionId)){
 	dto.setIdx(idx);
+	dto.setTname(tname);
 	delResult = dao.deletePost(dto);
 	dao.close();
 	
@@ -28,7 +29,7 @@ if(dto.getId().equals(sessionId)){
 	if(delResult == 1) {
 		String sFileName = dto.getSfile();
 		FileUtil.deleteFile(request, "/Uploads", sFileName);
-		JSFunction.alertLocation("삭제되었습니다.", "sub01.jsp", out);
+		JSFunction.alertLocation("삭제되었습니다.", "sub01.jsp?tname="+tname, out);
 	}
 	else JSFunction.alertBack("삭제에 실패했습니다.", out); //삭제실패시뒤로이동
 }else{

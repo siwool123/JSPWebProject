@@ -18,6 +18,7 @@
 글쓰기 처리 페이지에서도 반드시 로그인을 확인해야한다.  -->    
  
 <%
+String tname = request.getParameter("tname");
 String content = request.getParameter("content");
 int idx = Integer.parseInt(request.getParameter("idx"));
 int comment_idx = Integer.parseInt(request.getParameter("comment_idx"));
@@ -32,7 +33,7 @@ CommentDAO cdao = new CommentDAO(application);
 int iResult = cdao.updateEdit(cdto); 
 cdao.close();
 System.out.println(iResult);
-if (iResult == 1) JSFunction.alertLocation("답글 수정에 성공했습니다.", "sub01_view.jsp?idx="+idx, out);
+if (iResult == 1) JSFunction.alertLocation("답글 수정에 성공했습니다.", "sub01_view.jsp?tname="+tname+"&idx="+idx, out);
 else JSFunction.alertBack("답글 수정에 실패하였습니다.", out);
 %>
 

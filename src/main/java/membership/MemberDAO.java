@@ -32,7 +32,8 @@ public class MemberDAO extends JDBConnect {
 				dto.setAdd1(rs.getString(7));
 				dto.setAdd2(rs.getString(8));
 				dto.setAdd3(rs.getString(9));
-				dto.setRegidate(rs.getString(10));
+				dto.setRegidate(rs.getDate(10));
+				dto.setGrade(rs.getInt(11));
 			}else {
 				System.out.println("rs 에 정보가없습니다");
 			}
@@ -61,7 +62,7 @@ public class MemberDAO extends JDBConnect {
 	}
 	
 	public int memberjoinDTO(MemberDTO dto) {
-		String sql = "INSERT INTO member VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)";
+		String sql = "INSERT INTO member VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, 3)";
 		int affected = 0;
 		try {
 			psmt = con.prepareStatement(sql);
@@ -83,17 +84,18 @@ public class MemberDAO extends JDBConnect {
 		return affected;
 	}
 
-	public boolean checkId(String id) {
+	public int checkId(String id) {
+		int result=0;
 		String sql = "SELECT * FROM member WHERE id=?";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setString(1, id);
 			rs = psmt.executeQuery();
-			if (rs.next()) return true;
+			if (rs.next()) result=1;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return result;
 	}
 
 	public MemberDTO viewMember(String uid) {
@@ -113,7 +115,8 @@ public class MemberDAO extends JDBConnect {
 				dto.setAdd1(rs.getString(7));
 				dto.setAdd2(rs.getString(8));
 				dto.setAdd3(rs.getString(9));
-				dto.setAdmin(rs.getInt(11));
+				dto.setRegidate(rs.getDate(10));
+				dto.setGrade(rs.getInt(11));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

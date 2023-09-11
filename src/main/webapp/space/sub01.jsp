@@ -21,20 +21,17 @@ NoticeDAO dao = new NoticeDAO(application);
 /* 검색어가 있는 경우 클라이언트가 선택한 필드명과 검색어를 저장할 Map컬렉션을 생성한다. */
 Map<String, Object> param = new HashMap<String, Object>();
 
-/********************************/
-//현재 게시판에서 사용하는 테이블을 Map컬렉션에 저장한다.
+/********************************현재 게시판에서 사용하는 테이블을 Map컬렉션에 저장*/
 param.put("tname", tname);
-/*********************************/
+/********************************/
 
 /* 검색폼에서 입력한 검색어와 필드명을 파라미터로 받아온다. 해당 <form>
-태그의 전송방식은 get, action 속성은 없는 상태이므로 현재 페이지로 
-폼값이 전송된다. */
+태그의 전송방식은 get, action 속성은 없는 상태이므로 현재 페이지로 폼값이 전송된다. */
 String searchField = request.getParameter("searchField");
 String searchWord = request.getParameter("searchWord");
 if (searchWord != null) {
 	/* 클라이언트가 입력한 검색어가 있는경우에만 Map컬렉션에 
-	컬럼명과 검색어를 추가한다. 해당 값은 DB처리를 위한 Model객체로
-	전달된다. */
+	컬럼명과 검색어를 추가한다. 해당 값은 DB처리를 위한 Model객체로 전달된다. */
   param.put("searchField", searchField);
   param.put("searchWord", searchWord);
 }
@@ -45,17 +42,15 @@ int totalCount = dao.selectCnt(param);
 /* #paging관련 코드 추가 start# */
 
 /* web.xml에 설정한 컨텍스트 초기화 파라미터를 읽어온다.
-초기화 파라미터는 String으로 저장되므로 산술연산을 위해 int형으로 
-변환해야한다. */
+초기화 파라미터는 String으로 저장되므로 산술연산을 위해 int형으로 변환해야한다. */
 int pageSize = Integer.parseInt(application.getInitParameter("POSTS_PER_PAGE"));
+if(tname.equals("imageboard")) pageSize = 6;
 int blockPage = Integer.parseInt(application.getInitParameter("PAGES_PER_BLOCK"));
 
 /* 전체 페이지수를 계산한다. 
 (전체게시물의 갯수 / 페이지당 출력할 게시물 갯수) => 결과값의 올림처리
-가령 게시물의 갯수가 51개라면 나눴을때 결과가 5.1이된다. 이때 무조건
-올림처리하여 6페이지로 설정하게된다. 
-만약 totalCount를 double형으로 변환하지 않으면 정수가 결과가 나오게
-되므로 5페이지가 된다. 이 부분을 주의해야한다. */ 
+가령 게시물의 갯수가 51개라면 나눴을때 결과가 5.1이된다. 이때 무조건 올림처리하여 6페이지로 설정하게된다. 
+만약 totalCount를 double형으로 변환하지 않으면 정수가 결과가 나오게 되므로 5페이지가 된다. 이 부분을 주의해야한다. */ 
 int totalPage = (int)Math.ceil((double)totalCount / pageSize); 
 
 /*목록에 처음 진입했을때는 페이지 관련 파라미터가 없는 상태이므로 무조건
@@ -80,6 +75,7 @@ param.put("end", end);
 List<NoticeDTO> noticeLists = dao.selectListPage(param);
 //DB 자원 해제 
 dao.close(); 
+String uri = request.getRequestURI()+"?tname="+tname;
 %>
 <%@ include file="../include/global_head.jsp" %>
 <!DOCTYPE html>
@@ -88,6 +84,9 @@ dao.close();
 <meta charset="UTF-8">
 <title>공지사항</title>
 </head>
+<style>
+.subtitle tr td {color:#818181; }
+</style>
  <body>
 <center>
 <div id="wrap">
@@ -101,13 +100,20 @@ dao.close();
 		</div>
 		<div class="right_contents">
 			<div class="top_title">
+<!-- 상단 타이블 게시판별로 다르게 출력 -->
 <% if(tname.equals("notice")) { %>
 				<img src="../images/space/sub01_title.gif" alt="공지사항" class="con_title" />
 				<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;공지사항<p>
 <% } else if(tname.equals("freeboard")) { %>	
 				<img src="../images/space/sub03_title.gif" alt="자유게시판" class="con_title" />
 					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;자유게시판<p>
-<% } %>			
+<% } else if(tname.equals("imageboard")) { %>	
+				<img src="../images/space/sub04_title.gif" alt="사진게시판" class="con_title" />
+					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;사진게시판<p>
+<%} else if(tname.equals("databoard")) { %>
+				<img src="../images/space/sub05_title.gif" alt="정보자료실" class="con_title" />
+					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;열린공간&nbsp;>&nbsp;정보자료실<p>
+<%} %>		
 			</div>
 			<div class="text-center mb-4 p-3" style="background-color:#e2e3e5;">
 <form action="" method="get">
@@ -120,6 +126,34 @@ dao.close();
 </form>
 </div>
 <div>
+<!-- 사진게시판의 경우 리스트 레이아웃 다르게 출력 3x2 -->
+<div width="100%" style="height:460px;margin:20px 0;border-bottom:1px solid #e2e3e5;">
+<% if(tname.equals("imageboard")) { %>
+
+	<% if(noticeLists.isEmpty()){ %>	
+		<div align="center">등록된 게시물이 없습니다.</div>
+	<% }else{
+		int virtualNum = 0;
+		int countNum = 0;
+		for(NoticeDTO dto : noticeLists){
+			virtualNum = totalCount-((pageNum-1)*pageSize+countNum++);
+	%>
+    <div style="display:inline;float:left; width:240px; margin-right:13px;">
+    	<div><img src="../Uploads/<%= dto.getSfile() %>" style="width:240px;height:160px;border:1px solid #d1d1d1;" /></div>
+    	<div><a class="fw-bold" style="font-size:1.2em; line-height:28px;" href="sub01_view.jsp?tname=<%=tname %>&idx=<%= dto.getIdx()%>"><%= JSFunction.titleCut(dto.getTitle(), 16) %></a></div>
+    	<table class="subtitle" width="100%" style="margin-bottom:30px;">
+    		<tr>
+    			<td width="40%"><i class="fa-solid fa-user"></i>&nbsp;&nbsp;<%= dto.getId() %></td>
+    			<td width="40%"><%= dto.getPostdate() %></td>
+    			<td width="20%" align="right"><i class="fa-solid fa-eye"></i>&nbsp;&nbsp;<%= dto.getVisitcnt() %></td>
+    		</tr>
+    	</table>
+    </div>
+	
+	<% }
+		} %>
+	</div>
+<%} else { %>
 <table class="table table-hover">
    <thead class="table-secondary">
      <tr align="center">
@@ -146,7 +180,7 @@ if(noticeLists.isEmpty()){
 %>
      <tr>
        <td align="center"><%= virtualNum %></td>
-       <td align="left"><a href="sub01_view.jsp?tname=<%=tname %>&idx=<%= dto.getIdx()%>"><%= dto.getTitle() %></a></td>
+       <td align="left"><a href="sub01_view.jsp?tname=<%=tname %>&idx=<%= dto.getIdx()%>"><%= JSFunction.titleCut(dto.getTitle(), 30)  %></a></td>
        <td align="center"><%= dto.getId() %></td>
        <td align="center"><%= dto.getVisitcnt() %></td>
        <td align="center"><%= dto.getPostdate() %></td>
@@ -155,16 +189,17 @@ if(noticeLists.isEmpty()){
 	}
 }
 %>
-
    </tbody>
 </table>
+<%} %>
 <table width="100%">
 	<tr>
-		<td width="85%" class="text-center">
-		<%= BoardPage.pagingImg(totalCount, pageSize, blockPage, pageNum, request.getRequestURI()) %>
+		<td width="20%">총 <%= totalCount %> 개   [ <%= pageNum %> / <%= totalPage %> 페이지 ]</td>
+		<td width="*" class="text-center">
+		<%= BoardPage.pagingImg(totalCount, pageSize, blockPage, pageNum, uri) %>
 		</td>
-		<td width="*">
-<% if(tname.equals("notice") && mdto.getAdmin()==1 || tname.equals("freeboard")){ %>		
+		<td width="15%" align="right">
+<% if(tname.equals("notice") && mdto.getGrade()==1 || tname.equals("freeboard")|| tname.equals("imageboard")|| tname.equals("databoard")){ %>		
 		<button type="button" onclick="location.href='sub01_write.jsp?tname=<%=tname %>';" >글쓰기</button>
 <% } %>
 		</td>

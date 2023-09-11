@@ -1,3 +1,4 @@
+<%@page import="utils.JSFunction"%>
 <%@page import="m1notice.NoticeDTO"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.HashMap"%>
@@ -21,10 +22,13 @@ map.put("end", 4);
 //공지사항 최근게시물4개추출
 map.put("tname", "notice");
 List<NoticeDTO> noticeL = dao.selectListPage(map);
-
 //자게 최근게시물 4개추출
 map.put("tname", "freeboard");
 List<NoticeDTO> freeboardL = dao.selectListPage(map);
+//사진최근게시물 6개 추출
+map.put("end", 6);
+map.put("tname", "imageboard");
+List<NoticeDTO> imageboardL = dao.selectListPage(map);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -52,6 +56,9 @@ function validateForm(form) {
         return false;
     }
 }
+var iframe = document.getElementById("myframe"); 
+var cthide = iframe.contentWindow.document.getElementById('calendarTitle');
+cthide.style.display = 'none';
 </script>
 <body>
 <center>
@@ -116,7 +123,7 @@ if (session.getAttribute("UserId") == null) {
 				</ul>
 			</div>
 			<div class="main_con_right">
-				<p class="main_title"><img src="../images/main_title03.gif" alt="자유게시판 FREE BOARD" /><a href="../space/sub03.jsp?tname=freeboard"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
+				<p class="main_title"><img src="../images/main_title03.gif" alt="자유게시판 FREE BOARD" /><a href="../space/sub01.jsp?tname=freeboard"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
 				<ul class="main_board_list">
 <% if(!freeboardL.isEmpty()){
 	for(NoticeDTO dto : freeboardL){ %>
@@ -133,8 +140,8 @@ if (session.getAttribute("UserId") == null) {
 				<img src="../images/main_tel.gif" />
 			</div>
 			<div class="main_con_center">
-				<p class="main_title" style="border:0px; margin-bottom:0px;"><img src="../images/main_title05.gif" alt="월간일정 CALENDAR" /></p>
-				<div class="cal_top">
+				<p class="main_title" style="border:0px; margin-bottom:0px;"><img src="../images/main_title05.gif" alt="월간일정 CALENDAR" /><a href="../space/sub02.jsp"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
+				<%-- <div class="cal_top">
 					<table cellpadding="0" cellspacing="0" border="0">
 						<colgroup>
 							<col width="13px;" />
@@ -223,47 +230,23 @@ if (session.getAttribute("UserId") == null) {
 							<td><a href="">&nbsp;</a></td>
 						</tr>
 					</table>
-				</div>
+				</div> --%>
+				<iframe id="myframe" src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FSeoul&showTitle=0&showTz=0&showNav=1&showCalendars=1&showPrint=0&src=ZDVjYTI1Yzk5MjQ1NWU5OGQ4YzgyMjA0MjQ0ZDM0OGIwZmFhNjhiY2IwODkzZDNlNzUyYmFjMzMxNzE2ZTM1Y0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=a28uc291dGhfa29yZWEjaG9saWRheUBncm91cC52LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23F6BF26&color=%23D50000" width="100%" height="250" frameborder="0" scrolling="no"></iframe>
 			</div>
 			<div class="main_con_right">
-				<p class="main_title"><img src="../images/main_title06.gif" alt="사진게시판 PHOTO BOARD" /><a href="../space/sub04.jsp"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
+				<p class="main_title"><img src="../images/main_title06.gif" alt="사진게시판 PHOTO BOARD" /><a href="../space/sub01.jsp?tname=imageboard"><img src="../images/more.gif" alt="more" class="more_btn" /></a></p>
 				<ul class="main_photo_list">
+<% if(!imageboardL.isEmpty()){
+	for(NoticeDTO dto : imageboardL){ %>
 					<li>
 						<dl>
-							<dt><a href=""><img src="../images/g_img.gif" /></a></dt>
-							<dd><a href="">마포 구립 장애인...</a></dd>
+						<a href="../space/sub01_view.jsp?tname=freeboard&idx=<%= dto.getIdx()%>">
+							<dt><img src="../Uploads/<%= dto.getSfile() %>" style="width:95px;height:63px;border:1px solid #d1d1d1;" /></dt>
+							<dd><%= JSFunction.titleCut(dto.getTitle(), 7) %></dd>
+						</a>
 						</dl>
 					</li>
-					<li>
-						<dl>
-							<dt><a href=""><img src="../images/g_img.gif" /></a></dt>
-							<dd><a href="">마포 구립 장애인...</a></dd>
-						</dl>
-					</li>
-					<li>
-						<dl>
-							<dt><a href=""><img src="../images/g_img.gif" /></a></dt>
-							<dd><a href="">마포 구립 장애인...</a></dd>
-						</dl>
-					</li>
-					<li>
-						<dl>
-							<dt><a href=""><img src="../images/g_img.gif" /></a></dt>
-							<dd><a href="">마포 구립 장애인...</a></dd>
-						</dl>
-					</li>
-					<li>
-						<dl>
-							<dt><a href=""><img src="../images/g_img.gif" /></a></dt>
-							<dd><a href="">마포 구립 장애인...</a></dd>
-						</dl>
-					</li>
-					<li>
-						<dl>
-							<dt><a href=""><img src="../images/g_img.gif" /></a></dt>
-							<dd><a href="">마포 구립 장애인...</a></dd>
-						</dl>
-					</li>
+<% }} %>
 				</ul>
 			</div>
 		</div>

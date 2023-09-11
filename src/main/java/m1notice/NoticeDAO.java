@@ -107,7 +107,6 @@ public class NoticeDAO extends JDBConnect {
 				dto.setDowncnt(rs.getInt(9));
 				dto.setLikecnt(rs.getInt(10));
 				dto.setName(rs.getString(11));
-				
 			}
 		}catch(Exception e) {
 			System.out.println("게시물 상세보기 중 예외발생");
@@ -252,15 +251,17 @@ public class NoticeDAO extends JDBConnect {
 		}
 	}
 	
-	public void updateLikecnt(int idx, String tname) {
+	public int updateLikecnt(int idx, String tname) {
+		int result = 0;
 		String sql = "UPDATE "+tname+" SET likecnt=NVL(likecnt, 0)+1 WHERE idx=?";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, idx);
-			psmt.executeQuery();
+			result = psmt.executeUpdate();
 		}catch(Exception e) {
 			System.out.println("좋아요 수 증가 중 예외발생");
 			e.printStackTrace();
 		}
+		return result;
 	}
 }

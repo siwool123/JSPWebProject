@@ -44,6 +44,6 @@
  <!-- 세션유지시간설정 -->
   <session-config>
    <session-timeout>20</session-timeout>
-</session-config>
+  </session-config>
 
 </web-app>

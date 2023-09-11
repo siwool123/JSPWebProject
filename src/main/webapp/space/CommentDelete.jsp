@@ -18,6 +18,7 @@
 글쓰기 처리 페이지에서도 반드시 로그인을 확인해야한다.  -->    
  
 <%
+String tname = request.getParameter("tname");
 int idx = Integer.parseInt(request.getParameter("idx"));
 int comment_idx = Integer.parseInt(request.getParameter("comment_idx"));
 CommentDTO cdto = new CommentDTO();
@@ -33,7 +34,7 @@ if(cdto.getId().equals(sessionId)){
 	
 	System.out.println(comment_idx +" / "+sessionId +" / "+delResult);
 	
-	if(delResult == 1) JSFunction.alertLocation("답글이 삭제되었습니다.", "sub01_view.jsp?idx="+idx, out);
+	if(delResult == 1) JSFunction.alertLocation("답글이 삭제되었습니다.", "sub01_view.jsp?tname="+tname+"&idx="+idx, out);
 	else JSFunction.alertBack("답글 삭제에 실패했습니다.", out); //삭제실패시뒤로이동
 }else{
 	JSFunction.alertBack("본인만 삭제할 수 있습니다.", out); //작성자본인아니면 삭제불가

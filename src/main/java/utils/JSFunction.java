@@ -19,4 +19,12 @@ public class JSFunction {
 			out.println(script);
 		}catch(Exception e) {}
 	}
+	
+	public static String titleCut(String title, int n) {
+		String result = title;
+		try {
+			if(title.length()>n) result = title.substring(0, n)+"...";
+		}catch(Exception e) {}
+		return result;
+	}
 }

@@ -57,14 +57,16 @@ for (Part filePart : fileParts) {
     dto.setSfile(sFileName);
 }
 dto.setTname(tname);
+System.out.println(tname);
+
 NoticeDAO dao = new NoticeDAO(application);
 int iResult = dao.insertWrite(dto); //기존처럼 게시물 1개를 등록할때 사용
 //더미게시물입력위해 반복문 사용
-/*int iResult = 0;
+/* int iResult = 0;
 for(int i=1; i<=100; i++){
 	dto.setTitle(title+"-"+i);
 	iResult = dao.insertWrite(dto);
-}*/
+} */
 dao.close();
 
 if (iResult == 1) JSFunction.alertLocation("게시글 작성에 성공했습니다.", "sub01.jsp?tname="+tname, out);
