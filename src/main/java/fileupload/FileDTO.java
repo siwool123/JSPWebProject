@@ -2,11 +2,10 @@ package fileupload;
 
 public class FileDTO {
 	private int idx;
-	private int board_idx;
+	private int bidx;
 	private String ofile; //원본파일명 (예 : 고길동_레포트_최종.doc)
 	private String sfile; //저장파일명 (예 : 20230101_123059.doc)
 	private int downcnt;
-	private String postdate;
 	
 	public int getIdx() {
 		return idx;
@@ -14,11 +13,11 @@ public class FileDTO {
 	public void setIdx(int idx) {
 		this.idx = idx;
 	}
-	public int getBoard_idx() {
-		return board_idx;
+	public int getBidx() {
+		return bidx;
 	}
-	public void setBoard_idx(int board_idx) {
-		this.board_idx = board_idx;
+	public void setBidx(int bidx) {
+		this.bidx = bidx;
 	}
 	public String getOfile() {
 		return ofile;
@@ -38,11 +37,4 @@ public class FileDTO {
 	public void setDowncnt(int downcnt) {
 		this.downcnt = downcnt;
 	}
-	public String getPostdate() {
-		return postdate;
-	}
-	public void setPostdate(String postdate) {
-		this.postdate = postdate;
-	}
-	
 }

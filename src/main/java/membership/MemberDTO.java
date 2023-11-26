@@ -1,11 +1,11 @@
 package membership;
 
 import java.sql.Date;
-
+ 
 public class MemberDTO {
 	private String id;
 	private String pw;
-	private String name;
+	private String name; 
 	private String email;
 	private String emailok;
 	private String phone;
@@ -14,6 +14,7 @@ public class MemberDTO {
 	private String add3;
 	private Date regidate;
 	private int grade;
+	private int point;
 	
 	public String getId() {
 		return id;
@@ -80,6 +81,12 @@ public class MemberDTO {
 	}
 	public void setGrade(int grade) {
 		this.grade = grade;
+	}
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
 	}
 	
 }

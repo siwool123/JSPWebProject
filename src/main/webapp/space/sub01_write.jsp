@@ -137,7 +137,7 @@ $(function(){
 			<td><input type="file" name="ofile" id="ofile" multiple class="form-control form-control-sm"
 			<% if(tname.equals("imageboard")){ %> accept=".jpg, .png, .gif" <% } %>
 			 />
-				<br><p>개별 파일 용량은 1MB까지 업로드 가능합니다.</p>
+				<br><p>개별 파일 용량은 1MB까지, 총 5MB 까지 파일 업로드 가능합니다.</p>
 			</td>
 		</tr>
         <tr>

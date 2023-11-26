@@ -34,6 +34,7 @@ public class MemberDAO extends JDBConnect {
 				dto.setAdd3(rs.getString(9));
 				dto.setRegidate(rs.getDate(10));
 				dto.setGrade(rs.getInt(11));
+				dto.setPoint(rs.getInt(12));;
 			}else {
 				System.out.println("rs 에 정보가없습니다");
 			}
@@ -54,7 +55,27 @@ public class MemberDAO extends JDBConnect {
 			if (rs.next()) { // 반환된 rs객체에 정보가있는지 확인
 				dto.setId(rs.getString(1));
 				dto.setName(rs.getString(3));
-			}else System.out.println("rs 에 정보가없습니다");
+			}else System.out.println("미등록 회원입니다. 회원가입을 진행해주세요.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dto;
+	}
+	
+	public MemberDTO pwfind(String id, String name) {
+		MemberDTO dto = new MemberDTO();
+		String sql = "SELECT * FROM member WHERE id=? and name=?";
+		try {
+			psmt = con.prepareStatement(sql);
+			psmt.setString(1, id);
+			psmt.setString(2, name);
+			rs = psmt.executeQuery();
+			if (rs.next()) { // 반환된 rs객체에 정보가있는지 확인
+				dto.setId(rs.getString(1));
+				dto.setPw(rs.getString(2));
+				dto.setName(rs.getString(3));
+				dto.setEmail(rs.getString(4));
+			}else System.out.println("미등록 회원입니다. 회원가입을 진행해주세요.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -62,7 +83,7 @@ public class MemberDAO extends JDBConnect {
 	}
 	
 	public int memberjoinDTO(MemberDTO dto) {
-		String sql = "INSERT INTO member VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, 3)";
+		String sql = "INSERT INTO member VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, 3, 0)";
 		int affected = 0;
 		try {
 			psmt = con.prepareStatement(sql);
@@ -117,6 +138,7 @@ public class MemberDAO extends JDBConnect {
 				dto.setAdd3(rs.getString(9));
 				dto.setRegidate(rs.getDate(10));
 				dto.setGrade(rs.getInt(11));
+				dto.setPoint(rs.getInt(12));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -141,6 +163,21 @@ public class MemberDAO extends JDBConnect {
 			result = psmt.executeUpdate();
 		} catch (Exception e) {
 			System.out.println("회원정보 변경 중 예외발생");
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public int updatePoint(String id, int point) {
+		int result = 0;
+		String sql = "UPDATE member SET point=point+? WHERE id=?";
+		try {
+			psmt = con.prepareStatement(sql);
+			psmt.setInt(1, point);
+			psmt.setString(2, id);
+			result = psmt.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("포인트 변경 중 예외발생");
 			e.printStackTrace();
 		}
 		return result;

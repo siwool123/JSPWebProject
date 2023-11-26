@@ -29,6 +29,19 @@ function validateForm(form) {
     }
 } 
 $(function(){
+	$('input[type=file]').change(function(){
+		var fsize = document.getElementById("ofile").files[0].size;
+		var fsize2 = 1024*1024*3;
+		if(fsize>fsize2) alert("첨부파일은 3MB까지 가능합니다.");
+		
+		if($(this).val().files && $(this).val().files[0]){
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('#loadImg').attr('src', e.target.result);
+			}
+			reader.readAsDataURL($(this).val().files[0]);
+		}
+	});	
 	$('input[name=title]').keyup(function(){
 		$('#ta_count').html($(this).val().length);
 		if($(this).val().length>80){
@@ -74,7 +87,7 @@ $(function(){
 </c:if>		
 				</div>
 				<div>
-<form id="writeFrm" method="post" action="../community/sub01_write.do?tname=${ param.tname }"
+<form id="writeFrm" method="post" action="sub01_write.do?tname=${ param.tname }"
       onsubmit="return validateForm(this.form);" enctype="multipart/form-data" multiple>
     <table class="table">
         <tr>
@@ -92,14 +105,15 @@ $(function(){
         <tr>
 			<td>첨부파일</td>
 			<td><input type="file" name="ofile" id="ofile" multiple class="form-control form-control-sm" />
-				<br><p>개별 파일 용량은 1MB까지 업로드 가능합니다.</p>
+				<br><p>개별 파일 용량은 3MB까지 업로드 가능합니다.</p>
+				<img src="" alt="" id="loadImg" />
 			</td>
 		</tr>
         <tr>
             <td colspan="2" align="center">
                 <button type="submit">작성 완료</button>
                 <button type="reset">다시 입력</button>
-                <button type="button" onclick="location.href='sub01.jsp?tname=${ param.tname }';">목록 보기</button>
+                <button type="button" onclick="location.href='sub01.do?tname=${ param.tname }';">목록 보기</button>
             </td>
         </tr>
     </table>

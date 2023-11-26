@@ -7,10 +7,12 @@ public class CommentDTO {
 	private int board_idx;
 	private String id;
 	private Date commentdate;
-	private int parent_idx;
 	private String content;
 	private int likecnt;
-	private int replycnt;
+	private int star;
+	private String ofile;
+	private String sfile;
+	
 	public int getIdx() {
 		return idx;
 	}
@@ -35,12 +37,6 @@ public class CommentDTO {
 	public void setCommentdate(Date commentdate) {
 		this.commentdate = commentdate;
 	}
-	public int getParent_idx() {
-		return parent_idx;
-	}
-	public void setParent_idx(int parent_idx) {
-		this.parent_idx = parent_idx;
-	}
 	public String getContent() {
 		return content;
 	}
@@ -53,11 +49,23 @@ public class CommentDTO {
 	public void setLikecnt(int likecnt) {
 		this.likecnt = likecnt;
 	}
-	public int getReplycnt() {
-		return replycnt;
+	public int getStar() {
+		return star;
 	}
-	public void setReplycnt(int replycnt) {
-		this.replycnt = replycnt;
+	public void setStar(int star) {
+		this.star = star;
+	}
+	public String getOfile() {
+		return ofile;
+	}
+	public void setOfile(String ofile) {
+		this.ofile = ofile;
+	}
+	public String getSfile() {
+		return sfile;
+	}
+	public void setSfile(String sfile) {
+		this.sfile = sfile;
 	}
 	
 }

@@ -1,3 +1,4 @@
+<%@page import="java.util.Arrays"%>
 <%@page import="java.util.stream.Collectors"%>
 <%@page import="java.io.IOException"%>
 <%@page import="java.io.FileOutputStream"%>
@@ -22,12 +23,24 @@ if(!sessionId.equals(dto.getId())){
 	JSFunction.alertBack("작성자 본인만 수정할수있습니다.", out); return;
 }
 dao.close();
+//첨부파일 확장자 추출 및 이미지 타입 확인
+String ext = "", fileName = dto.getSfile();
+if(fileName!=null) ext = fileName.substring(fileName.lastIndexOf(".")+1);		
+String[] imgStr = {"png", "jpg", "gif", "bmp"};
+List<String> imgList = Arrays.asList(imgStr);
+
+boolean isImage = false;
+if(imgList.contains(ext)) isImage = true; //첨부파일이 이미지이면 본문에 표시
 %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>공지사항 수정하기</title>
+<style>
+#ta_count, #ta_count_2 { margin-left:10px}
+#ta_count, #ta_count_2, .count {font-size:0.8em; color:gray;}
+</style>
 <script type="text/javascript">
 /* 글쓰기 페이지에서 제목과 내용이 입력되었는지 검증하는 JS코드 */
 function validateForm(form) { 
@@ -41,7 +54,34 @@ function validateForm(form) {
         form.content.focus();
         return false;
     }
+<% if(tname.equals("imageboard")||tname.equals("databoard")) { %>  
+	if (form.ofile.value == "") {
+	    alert("첨부파일을 반드시 업로드해주세요.");
+	    form.ofile.focus();
+	    return false;
+	}
+<%}%>
 }
+$(function(){
+	$('input[name=title]').keyup(function(){
+		$('#ta_count').html($(this).val().length);
+		if($(this).val().length>80){
+			alert("제목을 80자 이내로 입력해주세요.");
+			$(this).val($(this).val().substring(0,80));
+			$('#ta_count').html("80");
+			$(this).focus(); 
+		}
+	});
+	$('textarea[name=content]').keyup(function(){
+		$('#ta_count_2').html($(this).val().length);
+		if($(this).val().length>800){
+			alert("내용을 800자 이내로 입력해주세요.");
+			$(this).val($(this).val().substring(0,800));
+			$('#ta_count_2').html("800");
+			$(this).focus(); 
+		}
+	});
+});
 </script>
 </head>
 
@@ -70,30 +110,51 @@ function validateForm(form) {
 <%} %>	
 				</div>
 				<div>
-<form name="writeFrm" method="post" action="EditProcess.jsp?tname=<%= tname %>" onsubmit="return validateForm(this);" enctype="multipart/form-data">
+<form name="writeFrm" method="post" action="EditProcess.jsp?tname=<%= tname %>&idx=<%= dto.getIdx() %>" onsubmit="return validateForm(this);" enctype="multipart/form-data">
 <input type="hidden" name="idx" value="<%= dto.getIdx() %>" />
 <input type="hidden" name="id" value="<%= dto.getId() %>" />
 <input type="hidden" name="prevOfile" value="<%= dto.getOfile() %>" />
 <input type="hidden" name="prevSfile" value="<%= dto.getSfile() %>" />
     <table class="table">
         <tr>
-            <td>제목</td>
+            <td>제목<span id="ta_count">0</span><span class="count"> / 80</span></td>
             <td>
-            <input type="text" name="title" style="width:100%;" class="form-control form-control-sm" value="<%= dto.getTitle() %>" />
+            <input type="text" name="title" style="width:100%;" class="form-control form-control-sm" value="<%= dto.getTitle() %>" maxlength='80' />
             </td>
         </tr>
         <tr>
-            <td>내용</td>
+            <td>내용<span id="ta_count_2">0</span><span class="count"> / 800</span></td>
             <td>
-                <textarea name="content" style="width: 100%; height:200px;" class="form-control form-control-sm"><%= dto.getContent() %></textarea>
+                <textarea name="content" style="width: 100%; height:200px;" class="form-control form-control-sm" maxlength='800'>
+                <%= dto.getContent() %>
+                </textarea>
             </td>
         </tr>
+        
+        	<% if(dto.getOfile()!=null && isImage==true) { %>
+        	<tr>
+        	<td>기존 첨부파일 미리보기</td>
+        	<td>
+			<p class="text-center"><img src="../Uploads/<%= dto.getSfile() %>" style="max-width:10%" /></p>
+			</td>
+        	</tr>
+			<% } %>
+        	
+        <tr>
+			<td>기존 첨부파일</td>
+			<td>
+			<% if(dto.getOfile()!=null) { %>
+			<a href="sub01_down.jsp?tname=<%= tname %>&ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><%= dto.getOfile() %></a>
+			<% } %>
+			</td>
+		</tr>
         <tr>
 			<td>첨부파일</td>
 			<td><input type="file" name="ofile" value="1" multiple class="form-control form-control-sm" id="formFileSm" />
 				<br/><p>개별 파일 용량은 1MB까지 업로드 가능합니다.</p>
 			</td>
 		</tr>
+		
         <tr>
             <td colspan="2" align="center">
                 <button type="submit">작성 완료</button>

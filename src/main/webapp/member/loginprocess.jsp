@@ -21,7 +21,7 @@ if(dto.getId() != null){
 	else CookieManager.deleteCookie(response, "sua_loginId");
 	session.setAttribute("UserId", dto.getId());
 	session.setAttribute("UserName", dto.getName());
-	JSFunction.alertLocation(dto.getName()+" 님, 로그인에 성공했습니다.", "/JSPWebProject/main/main.jsp", out);
+	JSFunction.alertLocation(dto.getName()+" 님, 로그인에 성공했습니다.", "../main/main.jsp", out);
 }else{
 	JSFunction.alertBack("아이디와 비밀번호가 일치하지 않습니다. 다시 입력해주세요.", out);
 	//request.setAttribute("LoginErrMsg", "아이디와 비밀번호를 다시 입력해주세요.");

@@ -19,6 +19,7 @@
 String tname = request.getParameter("tname");
 int idx = Integer.parseInt(request.getParameter("idx"));
 String title = request.getParameter("title");
+System.out.println("제목 : "+title);
 String content = request.getParameter("content");
 String prevOfile = request.getParameter("prevOfile");
 String prevSfile = request.getParameter("prevSfile");
@@ -27,6 +28,7 @@ NoticeDTO dto = new NoticeDTO(); //폼값을 DTO객체에 저장한다.
 dto.setTname(tname);
 dto.setIdx(idx);
 dto.setTitle(title);
+
 dto.setContent(content);
 dto.setId(session.getAttribute("UserId").toString());
 String oFileName = "";

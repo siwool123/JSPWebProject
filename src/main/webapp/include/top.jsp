@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <div id="top" style="border:0px solid #000;"> 
-	<a href="../main/main.do"><img src="../images/logo.gif" alt="마포구립장애인 직업재활센터" id="top_logo" /></a>
+	<a href="../main/main.jsp"><img src="../images/logo.gif" alt="마포구립장애인 직업재활센터" id="top_logo" /></a>
 	<ul id="lnb"> 
 	<% if (session.getAttribute("UserId") == null) { %>
 		<!-- 로그인전 -->
@@ -25,7 +25,7 @@
 		<area shape="rect" alt="" title="" coords="193,0,316,33" href="../product/sub01.jsp" target="" />
 		<area shape="rect" alt="" title="" coords="321,0,420,33" href="../market/sub01.jsp" target="" />
 		<area shape="rect" alt="" title="" coords="428,0,529,33" href="../space/sub01.jsp?tname=notice" target="" />
-		<area shape="rect" alt="" title="" coords="536,0,638,33" href="../community/sub01.jsp?tname=staffboard" target="" />
+		<area shape="rect" alt="" title="" coords="536,0,638,33" href="../community/sub01.do?tname=guardboard" target="" />
 		<area shape="rect" alt="" title="" coords="641,0,749,33" href="../volunteer/sub01.jsp" target="" />
 	</map>
 	

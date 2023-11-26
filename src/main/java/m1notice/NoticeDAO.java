@@ -77,6 +77,7 @@ public class NoticeDAO extends JDBConnect {
 			psmt.setString(4, dto.getOfile());
 			psmt.setString(5, dto.getSfile());
 			result = psmt.executeUpdate();
+			
 		}catch(Exception e) {
 			System.out.println("게시물 입력 중 예외발생");
 			e.printStackTrace();
@@ -240,20 +241,24 @@ public class NoticeDAO extends JDBConnect {
 		return maxmin;
 	}
 	
-	public void downcntPlus(int idx, String tname) {
-		String sql = "UPDATE "+tname+" SET downcnt=NVL(downcnt, 0)+1 WHERE idx="+idx;
+	public int downcntPlus(int idx, String tname) {
+		int result = 0;
+		String sql = "UPDATE "+tname+" SET downcnt=downcnt+1 WHERE idx="+idx;
+		String sql2 = "UPDATE fileb SET downcnt=downcnt+1 WHERE bidx="+idx;
 		try {
 			stmt = con.createStatement();
-			stmt.executeQuery(sql);
+			result = stmt.executeUpdate(sql);
+			int result2 = stmt.executeUpdate(sql2);
 		}catch(Exception e) {
 			System.out.println("게시물 다운로드수 증가 중 예외발생");
 			e.toString();
 		}
+		return result;
 	}
 	
 	public int updateLikecnt(int idx, String tname) {
 		int result = 0;
-		String sql = "UPDATE "+tname+" SET likecnt=NVL(likecnt, 0)+1 WHERE idx=?";
+		String sql = "UPDATE "+tname+" SET likecnt=likecnt+1 WHERE idx=?";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, idx);

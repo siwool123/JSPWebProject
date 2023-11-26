@@ -124,7 +124,7 @@ String uri = request.getRequestURI()+"?tname="+tname;
 		<input type="text" name="searchWord" placeholder="검색어를 입력하세요." style="border:1px solid #adb5bd; height:26px; width:65%;padding-left:10px;" />
 		<button type="submit" style="width:10%; height:26px; background-color:black; border:none;"><i style="color:white;" class="fa-solid fa-magnifying-glass"></i></button>
 </form>
-</div>
+		</div>
 <div>
 <!-- 사진게시판의 경우 리스트 레이아웃 다르게 출력 3x2 -->
 <div width="100%" style="height:460px;margin:20px 0;border-bottom:1px solid #e2e3e5;">
@@ -158,10 +158,11 @@ String uri = request.getRequestURI()+"?tname="+tname;
    <thead class="table-secondary">
      <tr align="center">
        <th width="10%">번호</th>
-       <th width="50%">제목</th>
+       <th width="42%">제목</th>
        <th width="15%">작성자</th>
        <th width="10%">조회수</th>
        <th width="15%">등록일</th>
+       <th width="8%">첨부</th>
      </tr>
    </thead>
    <tbody>
@@ -180,10 +181,15 @@ if(noticeLists.isEmpty()){
 %>
      <tr>
        <td align="center"><%= virtualNum %></td>
-       <td align="left"><a href="sub01_view.jsp?tname=<%=tname %>&idx=<%= dto.getIdx()%>"><%= JSFunction.titleCut(dto.getTitle(), 30)  %></a></td>
+       <td align="left"><a href="sub01_view.jsp?tname=<%=tname %>&idx=<%= dto.getIdx()%>"><%= JSFunction.titleCut(dto.getTitle(), 25)  %></a></td>
        <td align="center"><%= dto.getId() %></td>
        <td align="center"><%= dto.getVisitcnt() %></td>
        <td align="center"><%= dto.getPostdate() %></td>
+       <td align="center">
+		<% if(dto.getOfile()!=null) { %>
+			<a href="sub01_down.jsp?tname=<%= tname %>&ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><i class="fa-solid fa-paperclip"></i></a>
+		<% } %>
+		</td>
      </tr>
 <%
 	}

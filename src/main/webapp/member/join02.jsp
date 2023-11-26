@@ -85,16 +85,10 @@ $(function () {
 		let params = {id:$('#id').val()}, id = $(this).val();
 		$.post('idcheck.jsp', params, function(resD){
 			console.log('콜백데이터', resD);
-			if(resD==1) {
-				$('#idResult').html('이미 존재하는 아이디입니다.');
-				$('#idResult').css('color', 'red');
-			}else if(resD==0 && id.length>7 && id.length<13 && isNaN(id.charAt(0))){
-				$('#idResult').html('사용 가능한 아이디 입니다.');
-				$('#idResult').css('color', 'green');
-			}else{
-				$('#idResult').html('아이디는 영문소문자로 시작하는 8~12자로 작성해주세요.');
-				$('#idResult').css('color', 'red');
-			}
+			if(resD==1) $('#idResult').html('이미 존재하는 아이디입니다.').css('color', 'red');
+			else if(resD==0 && id.length>7 && id.length<13 && isNaN(id.charAt(0))){
+				$('#idResult').html('사용 가능한 아이디 입니다.').css('color', 'green');
+			}else $('#idResult').html('아이디는 영문소문자로 시작하는 8~12자로 작성해주세요.').css('color', 'red');
 		});
 	});
 });

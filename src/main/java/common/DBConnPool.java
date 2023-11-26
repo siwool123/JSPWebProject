@@ -47,7 +47,7 @@ public class DBConnPool {
 	public void close() {
 		try {
 			if(rs!=null) rs.close();
-//			if(stmt!=null) stmt.close(); 
+			if(stmt!=null) stmt.close(); 
 			if(psmt!=null) psmt.close(); //연결확인후 자원해제한다
 			if(con!=null) con.close();
 			System.out.println("DB 커넥션 풀 자원 반납");

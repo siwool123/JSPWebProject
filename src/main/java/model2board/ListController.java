@@ -49,7 +49,7 @@ public class ListController extends HttpServlet {
 		
 		int pageSize = Integer.parseInt(application.getInitParameter("POSTS_PER_PAGE"));
 		int blockPage = Integer.parseInt(application.getInitParameter("PAGES_PER_BLOCK"));
-		
+		int totalPage = (int)Math.ceil((double)totalCount / pageSize);
 		int pageNum = 1; //현재페이지 확인
 		String pageTemp = req.getParameter("pageNum");
 		if(pageTemp != null && !pageTemp.equals("")) pageNum = Integer.parseInt(pageTemp);
@@ -70,11 +70,11 @@ public class ListController extends HttpServlet {
 		map.put("totalCount", totalCount); //전체게시물개수
 		map.put("pageSize", pageSize); //한페이지에 출력할 개수
 		map.put("pageNum", pageNum); //현재페이지 번호
-		
+		map.put("totalPage", totalPage);
 		//뷰(jsp 페이지)로 전달할 데이터를 request 영역에 저장
 		req.setAttribute("boardLists", boardLists);
 		req.setAttribute("tname", tname);
 		req.setAttribute("map", map);
-		req.getRequestDispatcher("/community/sub01.do?tname="+tname).forward(req, resp);
+		req.getRequestDispatcher("/community/sub01.jsp").forward(req, resp);
 	}
 }

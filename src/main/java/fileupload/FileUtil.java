@@ -117,9 +117,7 @@ public class FileUtil {
             e.printStackTrace();
         }
 	}
-	/*
-파일이 저장된 디렉토리의 물리적경로가져옴 > 
-	 */
+	/*파일이 저장된 디렉토리의 물리적경로가져옴 > 	 */
 	public static void deleteFile(HttpServletRequest req, String directory, String filename) {
 		String sDirectory = req.getServletContext().getRealPath(directory);
 		File file = new File( sDirectory + File.separator + filename );

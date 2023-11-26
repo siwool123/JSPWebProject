@@ -4,8 +4,8 @@
 <script>
 function formValidate(frm){
     //체크 확인 
-    if(!frm.agreement1.checked) {
-		alert("이용약관과 개인정보취급방침에 동의해주세요."); frm.agreement1.focus(); return false;
+    if(!frm.agreement1.checked || !frm.agreement2.checked) {
+		alert("이용약관과 개인정보취급방침에 동의해주세요."); return false;
 	}
 }
 </script>
@@ -485,7 +485,7 @@ function formValidate(frm){
 				</div>
 				<form name="joinForm" action="join02.jsp" method="post" onsubmit="return formValidate(this);">
 				<p style="text-align:center; margin-bottom:20px;"><input type="checkbox" name="agreement1" value="">이용약관과 개인정보취급방침에 동의합니다.</p>
-
+				<p style="text-align:center; margin-bottom:20px;"><input type="checkbox" name="agreement2" value="">이용약관과 개인정보취급방침에 동의합니다.</p>
 				<p style="text-align:center; margin-bottom:20px"><input type="image" src="../images/btn01.gif" />&nbsp;&nbsp;<a href="#"><img src="../images/btn02.gif" /></a></p>
 				</form>
 

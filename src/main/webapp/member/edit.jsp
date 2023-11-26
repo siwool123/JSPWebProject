@@ -105,7 +105,7 @@ function postOpen() {
 			<div class="right_contents">
 				<div class="top_title">
 					<img src="../images/join_tit.gif" alt="회원가입" class="con_title" />
-					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;멤버쉽&nbsp;>&nbsp;회원가입<p>
+					<p class="location"><img src="../images/center/house.gif" />&nbsp;&nbsp;멤버쉽&nbsp;>&nbsp;회원정보변경<p>
 				</div>
 
 				<p class="join_title"><img src="../images/join_tit03.gif" alt="회원정보입력" /></p>
@@ -118,6 +118,10 @@ function postOpen() {
 					<tr>
 						<th><img src="../images/join_tit001.gif" /></th>
 						<td><input type="text" name="name" value="<%= dto.getName() %>" class="join_input" /></td>
+					</tr>
+					<tr>
+						<th><img src="../images/join_tit002.gif" /></th>
+						<td><%= dto.getId() %></td>
 					</tr>
 					<tr>
 						<th><img src="../images/join_tit003.gif" /></th>

@@ -109,6 +109,7 @@ public class Notice2DAO extends DBConnPool {
 				dto.setDowncnt(rs.getInt(9));
 				dto.setLikecnt(rs.getInt(10));
 				dto.setName(rs.getString(11));
+				dto.setTname(tname);
 			}
 		}catch(Exception e) {
 			System.out.println("게시물 상세보기 중 예외발생");
@@ -242,15 +243,19 @@ public class Notice2DAO extends DBConnPool {
 		return maxmin;
 	}
 	
-	public void downcntPlus(int idx, String tname) {
-		String sql = "UPDATE "+tname+" SET downcnt=NVL(downcnt, 0)+1 WHERE idx="+idx;
+	public int downcntPlus(int idx, String tname) {
+		int result = 0;
+		String sql = "UPDATE "+tname+" SET downcnt=downcnt+1 WHERE idx="+idx;
 		try {
 			stmt = con.createStatement();
-			stmt.executeQuery(sql);
+			result = stmt.executeUpdate(sql);
+			System.out.println(result);
 		}catch(Exception e) {
 			System.out.println("게시물 다운로드수 증가 중 예외발생");
-			e.toString();
+			e.printStackTrace();
 		}
+		return result;
+		
 	}
 	
 	public int updateLikecnt(int idx, String tname) {

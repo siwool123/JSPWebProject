@@ -25,10 +25,11 @@ public class CommentDAO extends JDBConnect {
 				cdto.setBoard_idx(rs.getInt(2));
 				cdto.setId(rs.getString(3));
 				cdto.setCommentdate(rs.getDate(4));
-				cdto.setParent_idx(rs.getInt(5));
-				cdto.setContent(rs.getString(6));
-				cdto.setLikecnt(rs.getInt(7));
-				cdto.setReplycnt(rs.getInt(8));
+				cdto.setContent(rs.getString(5));
+				cdto.setLikecnt(rs.getInt(6));
+				cdto.setStar(rs.getInt(7));
+				cdto.setOfile(rs.getString(8));
+				cdto.setSfile(rs.getString(9));
 				
 				bbs.add(cdto); //리스트에 dto추가
 			}
@@ -41,7 +42,7 @@ public class CommentDAO extends JDBConnect {
 	
 	public int updateLikecnt(int idx) {
 		int result = 0;
-		String sql = "UPDATE sua_comment SET likecnt=NVL(likecnt, 0)+1 WHERE idx=?";
+		String sql = "UPDATE sua_comment SET likecnt=likecnt+1 WHERE idx=?";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, idx);
@@ -53,37 +54,28 @@ public class CommentDAO extends JDBConnect {
 		return result;
 	}
 	
-	public void updateReplycnt(int idx) {
-		String sql = "UPDATE sua_comment SET replycnt=NVL(replycnt, 0)+1 WHERE idx=?";
-		try {
-			psmt = con.prepareStatement(sql);
-			psmt.setInt(1, idx);
-			psmt.executeQuery();
-		}catch(Exception e) {
-			System.out.println("대댓글수 증가 중 예외발생");
-			e.printStackTrace();
-		}
-	}
-	
 	//답글 입력위한 메소드. 폼값이 저장된 dto객체를 인수로 받는다.
 	public int insertWrite(CommentDTO cdto) {
 		int result=0;
 		try {
-			String sql = "INSERT INTO sua_comment VALUES (seq_comment.NEXTVAL, ?, ?, SYSDATE, null, ?, 0, 0)";
+			String sql = "INSERT INTO sua_comment VALUES (seq_comment.NEXTVAL, ?, ?, SYSDATE, ?, 0, ?, ?, ?)";
 			psmt = con.prepareStatement(sql);
 			psmt.setInt(1, cdto.getBoard_idx());
 			psmt.setString(2, cdto.getId());
 			psmt.setString(3, cdto.getContent());
+			psmt.setInt(4, cdto.getStar());
+			psmt.setString(5, cdto.getOfile());
+			psmt.setString(6, cdto.getSfile());
 			result = psmt.executeUpdate();
 		}catch(Exception e) {
-			System.out.println("답글 입력 중 예외발생");
+			System.out.println("답글 입력 중 예외발생 : "+result+", "+cdto.getBoard_idx()+", "+cdto.getId()+", "+cdto.getContent());
 			e.printStackTrace();
 		} 
 		return result;
 	}
 	
 	public CommentDTO selectView(int idx) {
-		CommentDTO dto = new CommentDTO();
+		CommentDTO cdto = new CommentDTO();
 		String sql = "SELECT * FROM sua_comment WHERE idx=?";
 		try {
 			psmt = con.prepareStatement(sql);
@@ -93,27 +85,34 @@ public class CommentDAO extends JDBConnect {
  * next()메소드는 rs으로 반환된 게시물을 확인해서 존재하면 true 반환한다.
  * 각 컬럼값추출시 1부터시작한느 인덱스와 컬럼명 둘다사용가능. 날짜인 경우getDate()메소드로 추출가능 */
 			if(rs.next()) {
-				dto.setIdx(rs.getInt(1));
-				dto.setBoard_idx(rs.getInt(2));
-				dto.setId(rs.getString(3));
-				dto.setContent(rs.getString(6));
-				dto.setLikecnt(rs.getInt(7));
+				cdto.setIdx(rs.getInt(1));
+				cdto.setBoard_idx(rs.getInt(2));
+				cdto.setId(rs.getString(3));
+				cdto.setCommentdate(rs.getDate(4));
+				cdto.setContent(rs.getString(5));
+				cdto.setLikecnt(rs.getInt(6));
+				cdto.setStar(rs.getInt(7));
+				cdto.setOfile(rs.getString(8));
+				cdto.setSfile(rs.getString(9));
 			}
 		}catch(Exception e) {
 			System.out.println("답글불러오기 중 예외발생");
 			e.printStackTrace();
 		}
-		return dto;
+		return cdto;
 	}
 	
 	//답글 수정하기 > 특정일련번호에 해당하는 게시물 수정
 	public int updateEdit(CommentDTO cdto) {
 		int result=0;
 		try {
-			String sql = "UPDATE sua_comment SET content=?, commentdate=SYSDATE WHERE idx=?";
+			String sql = "UPDATE sua_comment SET content=?, star=?, ofile=? sfile=? WHERE idx=?";
 			psmt = con.prepareStatement(sql);
 			psmt.setString(1, cdto.getContent());
-			psmt.setInt(2, cdto.getIdx());
+			psmt.setInt(2, cdto.getStar());
+			psmt.setString(3, cdto.getOfile());
+			psmt.setString(4, cdto.getSfile());
+			psmt.setInt(5, cdto.getIdx());
 			result = psmt.executeUpdate();
 		}catch(Exception e) {
 			System.out.println("답글 수정 중 예외발생");

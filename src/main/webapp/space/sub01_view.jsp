@@ -11,7 +11,6 @@
 <%@page import="m1notice.NoticeDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ include file="../include/global_head.jsp" %>
 <%@ include file="../include/IsLoggedIn.jsp" %>
 <%
@@ -61,9 +60,7 @@ if(imgList.contains(ext)) isImage = true; //첨부파일이 이미지이면 본�
 </style>
 <script type="text/javascript">
 //게시물삭제위한js함수 > confirm함수는 대화창에서 예 클릭시 true반환된다.
-/* form 태그의 name속성통해 DOM을 얻어온다.
-전송방식과 전송경로를 지정한다 > submit 함수로 폼값전송 
-폼태그하위의 hidden타입설정된 일련번호전송 */
+/* form 태그의 name속성통해 DOM을 얻어온다.> 전송방식과 전송경로를 지정한다 > submit 함수로 폼값전송 > 폼태그하위의 hidden타입설정된 일련번호전송 */
 function deletePost() {
 	var confirmed = confirm("정말로 삭제하시겠습니까?");
     if (confirmed) {
@@ -80,13 +77,11 @@ function validateForm(form) {
         return false;
     }
 }
-$(document).ready(function(){
+$(function () {
 	$("#editComment").click(function(){
 		$(".hideContent").hide();
 		$("#hideFrm").show();
 	});
-});
-$(function () {
 	$('#noticeLike').click(function(){
 		alert("게시글 좋아요 1 증가");
 		$(this).css({'color':'red'});
@@ -149,7 +144,7 @@ $(function () {
 </thead>
 <tbody>
 	<tr>
-		<td style="width:25%;">작성자 : <%= dto.getId() %></td>
+		<td style="width:25%;">작성자 : <%= dto.getName() %></td>
 		<td style="width:25%;">작성일 : <%= dto.getPostdate() %></td>
 		<td style="width:25%;">조회수 : <%= dto.getVisitcnt() %></td>
 		<td style="width:25%;">작성번호 : <%= dto.getIdx() %></td>
@@ -169,7 +164,7 @@ $(function () {
 		<td>첨부파일</td>
 		<td>
 		<% if(dto.getOfile()!=null) { %>
-			<a href="sub01_download.jsp?tname=<%= tname %>&ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><%= dto.getOfile() %></a>
+			<a href="sub01_down.jsp?tname=<%= tname %>&ofile=<%= dto.getOfile() %>&sfile=<%= dto.getSfile() %>&idx=<%= dto.getIdx()%>"><%= dto.getOfile() %></a>
 		<% } %>
 		</td>
 		<td align="right">다운횟수 : <%= dto.getDowncnt() %></td>
@@ -219,22 +214,17 @@ if(!commentLists.isEmpty()){
 		<td align="right"><button type="submit">수정완료</button></td>
 	</tr>
 </form>
-
-<%
-	}
-}
-%>
+<% } } %>
 </table>
 <!-- 답변작성폼 -->
-<form name="commentFrm" method="post" action="CommentWrite.jsp?tname=<%= tname %>" onsubmit="return validateForm(this);">
-<input type="hidden" name="idx" value="<%= idx %>" />
+<form name="commentFrm" method="post" action="CommentWrite.jsp?tname=<%= tname %>&idx=<%=idx%>" onsubmit="return validateForm(this);">
 <table class="table comment">
 <tr>
 	<td width="5%"><i class="fa-solid fa-face-smile" style="font-size:20px;"></i></td>
 	<td>
 	<textarea name="content" style="width:100%;height:100px;" placeholder="로그인하셔야 답변 작성 가능합니다."></textarea><br/><br/>
 	</td>
-	<td align="right"><button type="submit">답글입력</button></td>
+	<td align="right" width="15%"><button type="submit">답글입력</button></td>
 </tr>
 </table>
 </form>
@@ -255,7 +245,7 @@ if(!commentLists.isEmpty()){
 		<form name="viewFrm">
 		<input type="hidden" name="idx" value="<%= idx %>" />
 		<button type="button" onclick="location.href='sub01.jsp?tname=<%= tname %>';">목록보기</button>
-<% if(tname.equals("notice") && mdto.getGrade()==1 || tname.equals("freeboard") || tname.equals("imageboard") || tname.equals("databoard")){ %>
+<% if(dto.getId().equals(UserId)){ %>
 		<button type="button" onclick="location.href='sub01_edit.jsp?tname=<%= tname %>&idx=<%= idx %>';">수정하기</button>
 		<!-- 삭제버튼누르면 js함수 호출. 해당함수는 submit()통해 폼값을서버로전송 -->
 		<button type="button" onclick="deletePost(<%=idx%>);">삭제하기</button>

@@ -48,7 +48,7 @@ public class BoardPage {
 	public static String pagingImg (int totalcnt, int pageSize, int blockPage, int pageNum, String reqUrl) {
 		String pagingStr = "<ul class='pagination pagination-sm justify-content-center'>"; 
 		
-		int totalPages = (int) Math.ceil(totalcnt / pageSize);
+		int totalPages = (int) Math.ceil((double)totalcnt / pageSize);
 		int pageTemp = ((pageNum-1)/blockPage)*blockPage+1;
 
 		if(pageTemp!=1) {
